@@ -50,7 +50,8 @@ const ResizableImage = Image.extend({
       const img = document.createElement('img');
       img.src = node.attrs.src;
       img.width = parseInt(node.attrs.width) || 300;
-      img.height = parseInt(node.attrs.height) || 'auto';
+      // Set the height using style instead of the height property
+      img.style.height = typeof node.attrs.height === 'string' ? node.attrs.height : `${node.attrs.height}px`;
       img.style.cursor = 'pointer';
 
       const resizeHandle = document.createElement('div');
@@ -75,7 +76,7 @@ const ResizableImage = Image.extend({
         startX = e.clientX;
         startY = e.clientY;
         startWidth = img.width;
-        startHeight = img.height;
+        startHeight = img.getBoundingClientRect().height;
         document.addEventListener('mousemove', resize);
         document.addEventListener('mouseup', stopResize);
         e.preventDefault();
@@ -88,7 +89,7 @@ const ResizableImage = Image.extend({
         const height = startHeight + (e.clientY - startY);
 
         img.width = width;
-        img.height = height;
+        img.style.height = `${height}px`;
 
         if (typeof getPos === 'function') {
           editor.commands.updateAttributes('image', {
