@@ -19,6 +19,17 @@ export const Guide = () => {
         console.error('Error fetching guide:', error);
         throw error;
       }
+
+      if (data) {
+        try {
+          const response = await fetch(data.doc_url);
+          const content = await response.text();
+          return { ...data, content };
+        } catch (error) {
+          console.error('Error fetching doc content:', error);
+          throw error;
+        }
+      }
       return data;
     },
   });
@@ -41,11 +52,13 @@ export const Guide = () => {
           {guide.description && (
             <p className="text-muted-foreground mb-4">{guide.description}</p>
           )}
-          <iframe 
-            src={guide.doc_url}
-            className="w-full min-h-[800px] border-0"
-            title={guide.title}
-          />
+          <div className="prose max-w-none">
+            {guide.content ? (
+              <div dangerouslySetInnerHTML={{ __html: guide.content }} />
+            ) : (
+              <p>Failed to load guide content</p>
+            )}
+          </div>
         </CardContent>
       </Card>
     </div>
