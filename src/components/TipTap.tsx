@@ -17,17 +17,17 @@ export const TipTap = ({ content, onUpdate }: TipTapProps) => {
     editorProps,
     content: content,
     onUpdate: ({ editor }) => {
-      onUpdate(editor.getHTML());
+      const html = editor.getHTML();
+      console.log('Editor content updated:', html);
+      onUpdate(html);
     },
   });
 
   // Update editor content when content prop changes
   useEffect(() => {
-    if (editor && content) {
-      // Only update if the content is different to avoid cursor jumping
-      if (editor.getHTML() !== content) {
-        editor.commands.setContent(content);
-      }
+    if (editor && content !== editor.getHTML()) {
+      console.log('Content prop changed, updating editor:', content);
+      editor.commands.setContent(content, false);
     }
   }, [editor, content]);
 
