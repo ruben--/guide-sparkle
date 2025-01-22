@@ -58,8 +58,8 @@ export const AdminLogin = ({ onLoginSuccess }: AdminLoginProps) => {
           description: "Successfully logged in as admin",
         });
         onLoginSuccess();
-        // Use navigate instead of window.location to prevent page reload
-        navigate("/admin");
+        // Redirect to the home page instead of the admin page
+        navigate("/");
       } else {
         throw new Error("No user data received");
       }
