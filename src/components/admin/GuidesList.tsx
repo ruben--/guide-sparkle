@@ -13,49 +13,31 @@ export const GuidesList = () => {
   const { data: guides, isLoading, error } = useQuery({
     queryKey: ["guides"],
     queryFn: async () => {
-      try {
-        const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
-        
-        if (sessionError) {
-          console.error('Session error:', sessionError);
-          throw new Error("Authentication error");
-        }
-
-        if (!sessionData.session) {
-          console.info('No session found, redirecting to auth');
-          throw new Error("Not authenticated");
-        }
-
-        console.info('Fetching guides with session:', sessionData.session.access_token);
-        
-        const { data, error: guidesError } = await supabase
-          .from("guides")
-          .select("*")
-          .order('created_at', { ascending: false });
-        
-        if (guidesError) {
-          console.error('Error fetching guides:', guidesError);
-          throw guidesError;
-        }
-
-        if (!data) {
-          console.info('No guides found');
-          return [];
-        }
-
-        console.info('Successfully fetched guides:', data.length);
-        return data;
-      } catch (error: any) {
-        console.error('Error in query function:', error);
-        // Check if it's a network error
-        if (error.message === "Failed to fetch") {
-          throw new Error("Network error - Please check your connection and try again");
-        }
-        throw error;
+      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
+      
+      if (sessionError) {
+        console.error('Session error:', sessionError);
+        throw new Error("Authentication error");
       }
+
+      if (!sessionData.session) {
+        console.info('No session found, redirecting to auth');
+        throw new Error("Not authenticated");
+      }
+
+      const { data, error: guidesError } = await supabase
+        .from("guides")
+        .select("*")
+        .order('created_at', { ascending: false });
+      
+      if (guidesError) {
+        console.error('Error fetching guides:', guidesError);
+        throw guidesError;
+      }
+
+      return data || [];
     },
     retry: (failureCount, error: any) => {
-      // Don't retry for auth errors, but retry up to 3 times for network errors
       if (error?.message === "Not authenticated") return false;
       return failureCount < 3;
     },
@@ -63,13 +45,12 @@ export const GuidesList = () => {
     meta: {
       onSettled: (data, error: any) => {
         if (error) {
-          console.error('Query error:', error);
           if (error.message === "Not authenticated") {
             navigate("/auth");
           } else {
             toast({
               title: "Error",
-              description: error.message || "Failed to load guides. Please try again later.",
+              description: error.message || "Failed to load guides",
               variant: "destructive",
             });
           }
