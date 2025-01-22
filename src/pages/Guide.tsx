@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Database } from "@/integrations/supabase/types";
+import { Skeleton } from "@/components/ui/skeleton";
 
 // Define the type for a guide with content
 type GuideWithContent = Database['public']['Tables']['guides']['Row'] & {
@@ -37,60 +38,27 @@ export const Guide = () => {
         throw new Error("Guide not found");
       }
 
-      try {
-        // Extract the document ID from the URL
-        const docId = extractDocId(guideData.doc_url);
-        if (!docId) {
-          throw new Error("Invalid Google Doc URL");
-        }
-
-        // Fetch the document content using Google Docs API
-        const response = await fetch(
-          `https://docs.googleapis.com/v1/documents/${docId}?key=${import.meta.env.VITE_GOOGLE_API_KEY}`
-        );
-        
-        if (!response.ok) {
-          throw new Error("Failed to fetch document content");
-        }
-
-        const docData = await response.json();
-        
-        // Extract text content from the document
-        let content = "";
-        if (docData.body && docData.body.content) {
-          content = docData.body.content.reduce((text: string, element: any) => {
-            if (element.paragraph) {
-              element.paragraph.elements.forEach((el: any) => {
-                if (el.textRun && el.textRun.content) {
-                  text += el.textRun.content;
-                }
-              });
-            }
-            return text;
-          }, "");
-        }
-
-        return { ...guideData, content };
-      } catch (error) {
-        console.error('Error fetching doc content:', error);
-        // Return the guide data even if we couldn't fetch the content
-        return { ...guideData, content: "Failed to load document content" };
-      }
+      // For now, return just the guide data without Google Docs content
+      // until we implement proper OAuth2 authentication
+      return {
+        ...guideData,
+        content: "This content will be available soon. We're setting up secure access to the document."
+      };
     },
   });
 
   if (isLoading) {
     return (
       <div className="container py-8">
-        <Card className="animate-pulse">
+        <Card>
           <CardHeader>
-            <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+            <Skeleton className="h-8 w-[250px]" />
           </CardHeader>
           <CardContent>
             <div className="space-y-4">
-              <div className="h-4 bg-gray-200 rounded w-full"></div>
-              <div className="h-4 bg-gray-200 rounded w-5/6"></div>
-              <div className="h-4 bg-gray-200 rounded w-4/6"></div>
+              <Skeleton className="h-4 w-full" />
+              <Skeleton className="h-4 w-5/6" />
+              <Skeleton className="h-4 w-4/6" />
             </div>
           </CardContent>
         </Card>
