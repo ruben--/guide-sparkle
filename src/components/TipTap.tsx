@@ -1,5 +1,10 @@
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
+import Image from '@tiptap/extension-image';
+import { Button } from "./ui/button";
+import { ImagePlus } from 'lucide-react';
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 
 interface TipTapProps {
   content: string;
@@ -7,8 +12,49 @@ interface TipTapProps {
 }
 
 export const TipTap = ({ content, onUpdate }: TipTapProps) => {
+  const { toast } = useToast();
+
+  const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    try {
+      // Upload to Supabase Storage
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('guide-images')
+        .upload(fileName, file);
+
+      if (uploadError) throw uploadError;
+
+      // Get public URL
+      const { data: { publicUrl } } = supabase.storage
+        .from('guide-images')
+        .getPublicUrl(fileName);
+
+      // Insert image in editor
+      editor?.chain().focus().setImage({ src: publicUrl }).run();
+
+      toast({
+        title: "Success",
+        description: "Image uploaded successfully",
+      });
+    } catch (error) {
+      console.error('Error uploading image:', error);
+      toast({
+        title: "Error",
+        description: "Failed to upload image",
+        variant: "destructive",
+      });
+    }
+  };
+
   const editor = useEditor({
-    extensions: [StarterKit],
+    extensions: [
+      StarterKit,
+      Image
+    ],
     content,
     editorProps: {
       attributes: {
@@ -51,10 +97,24 @@ export const TipTap = ({ content, onUpdate }: TipTapProps) => {
         >
           Bullet List
         </Button>
+        <div className="relative">
+          <input
+            type="file"
+            accept="image/*"
+            onChange={handleImageUpload}
+            className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
+          />
+          <Button
+            variant="outline"
+            size="sm"
+            className="pointer-events-none"
+          >
+            <ImagePlus className="h-4 w-4 mr-1" />
+            Add Image
+          </Button>
+        </div>
       </div>
       <EditorContent editor={editor} />
     </div>
   );
 };
-
-import { Button } from "./ui/button";
