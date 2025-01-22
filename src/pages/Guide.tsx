@@ -6,6 +6,7 @@ import { Database } from "@/integrations/supabase/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect, useState } from "react";
 import { toast } from "@/hooks/use-toast";
+import { Button } from "@/components/ui/button";
 
 // Define the type for a guide with content
 type GuideWithContent = Database['public']['Tables']['guides']['Row'] & {
@@ -45,6 +46,7 @@ const initializeGoogleApi = () => {
 export const Guide = () => {
   const { id } = useParams();
   const [isGapiInitialized, setIsGapiInitialized] = useState(false);
+  const [isSigningIn, setIsSigningIn] = useState(false);
 
   useEffect(() => {
     const script = document.createElement('script');
@@ -69,7 +71,25 @@ export const Guide = () => {
     };
   }, []);
 
-  const { data: guide, isLoading, error } = useQuery({
+  const handleGoogleSignIn = async () => {
+    setIsSigningIn(true);
+    try {
+      await window.gapi.auth2.getAuthInstance().signIn();
+      // Refetch the query after successful sign-in
+      await refetch();
+    } catch (error) {
+      console.error('Google Sign-in error:', error);
+      toast({
+        title: "Error",
+        description: "Failed to sign in with Google. Please try again.",
+        variant: "destructive",
+      });
+    } finally {
+      setIsSigningIn(false);
+    }
+  };
+
+  const { data: guide, isLoading, error, refetch } = useQuery({
     queryKey: ["guide", id],
     queryFn: async () => {
       const { data: guideData, error: supabaseError } = await supabase
@@ -100,12 +120,15 @@ export const Guide = () => {
           throw new Error("Invalid Google Doc URL");
         }
 
-        // Ensure user is signed in
-        if (!window.gapi.auth2.getAuthInstance().isSignedIn.get()) {
-          await window.gapi.auth2.getAuthInstance().signIn();
+        const auth2 = window.gapi.auth2.getAuthInstance();
+        if (!auth2.isSignedIn.get()) {
+          return {
+            ...guideData,
+            content: "Please sign in with Google to view this document",
+            requiresAuth: true
+          };
         }
 
-        // Fetch document content
         const response = await window.gapi.client.docs.documents.get({
           documentId: docId
         });
@@ -127,14 +150,22 @@ export const Guide = () => {
         return { ...guideData, content };
       } catch (error) {
         console.error('Error fetching doc content:', error);
+        const isAuthError = error.status === 401 || error.status === 403;
+        
         toast({
           title: "Error",
-          description: "Failed to load document content. Please ensure you're signed in with a Google account that has access to this document.",
+          description: isAuthError 
+            ? "Please ensure you're signed in with a Google account that has access to this document."
+            : "Failed to load document content. Please try again later.",
           variant: "destructive",
         });
+
         return {
           ...guideData,
-          content: "Failed to load document content. Please ensure you're signed in with a Google account that has access to this document."
+          content: isAuthError 
+            ? "Please sign in with Google to view this document"
+            : "Failed to load document content. Please try again later.",
+          requiresAuth: isAuthError
         };
       }
     },
@@ -201,10 +232,18 @@ export const Guide = () => {
             <p className="text-muted-foreground mb-4">{guide.description}</p>
           )}
           <div className="prose max-w-none whitespace-pre-wrap">
-            {guide.content ? (
-              <div>{guide.content}</div>
+            {guide.requiresAuth ? (
+              <div className="text-center py-8">
+                <p className="mb-4">{guide.content}</p>
+                <Button 
+                  onClick={handleGoogleSignIn}
+                  disabled={isSigningIn}
+                >
+                  {isSigningIn ? "Signing in..." : "Sign in with Google"}
+                </Button>
+              </div>
             ) : (
-              <p>Failed to load guide content</p>
+              <div>{guide.content}</div>
             )}
           </div>
         </CardContent>
