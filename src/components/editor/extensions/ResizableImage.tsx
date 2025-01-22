@@ -1,22 +1,35 @@
 import Image from '@tiptap/extension-image';
 
 export const ResizableImage = Image.extend({
+  name: 'resizableImage',
   addAttributes() {
     return {
       ...this.parent?.(),
       width: {
         default: null,
-        renderHTML: (attributes) => ({
-          width: attributes.width,
-          style: `width: ${attributes.width}`,
-        }),
+        parseHTML: element => element.getAttribute('width'),
+        renderHTML: attributes => {
+          if (!attributes.width) {
+            return {};
+          }
+          return {
+            width: attributes.width,
+            style: `width: ${attributes.width}`,
+          };
+        },
       },
       height: {
         default: null,
-        renderHTML: (attributes) => ({
-          height: attributes.height,
-          style: `height: ${attributes.height}`,
-        }),
+        parseHTML: element => element.getAttribute('height'),
+        renderHTML: attributes => {
+          if (!attributes.height) {
+            return {};
+          }
+          return {
+            height: attributes.height,
+            style: `height: ${attributes.height}`,
+          };
+        },
       },
     };
   },

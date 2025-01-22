@@ -38,10 +38,13 @@ export const InsertToolbar = ({ editor }: InsertToolbarProps) => {
           .from('guide-images')
           .getPublicUrl(fileName);
 
-        editor?.chain().focus().setImage({ 
-          src: publicUrl,
-          width: `${width}px`,
-          height: `${height}px`
+        editor?.chain().focus().insertContent({
+          type: 'resizableImage',
+          attrs: {
+            src: publicUrl,
+            width: `${width}px`,
+            height: `${height}px`
+          }
         }).run();
 
         toast({
