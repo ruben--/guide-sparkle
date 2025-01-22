@@ -20,7 +20,7 @@ export const GuideViewMode = ({
   onDelete,
 }: GuideViewModeProps) => {
   return (
-    <>
+    <div className="animate-fade-in">
       <CardHeader className="flex flex-row items-center justify-between space-y-0">
         <CardTitle className="text-2xl">{title}</CardTitle>
         {isLoggedIn && (
@@ -43,6 +43,6 @@ export const GuideViewMode = ({
           dangerouslySetInnerHTML={{ __html: content || "" }}
         />
       </CardContent>
-    </>
+    </div>
   );
 };
