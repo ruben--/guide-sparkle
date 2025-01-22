@@ -25,20 +25,44 @@ const Admin = () => {
   const { data: guides, isLoading } = useQuery({
     queryKey: ["guides"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("guides").select("*");
-      if (error) throw error;
+      const { data, error } = await supabase
+        .from("guides")
+        .select("*")
+        .order('created_at', { ascending: false });
+      
+      if (error) {
+        console.error('Error fetching guides:', error);
+        throw error;
+      }
       return data;
     },
     enabled: isAuthenticated,
   });
 
-  const handleLogin = () => {
+  const handleLogin = async () => {
     if (code === "0129") {
-      setIsAuthenticated(true);
-      toast({
-        title: "Success",
-        description: "Successfully logged in as admin",
-      });
+      try {
+        // Sign in with a dummy email/password for admin
+        const { error } = await supabase.auth.signInWithPassword({
+          email: 'admin@example.com',
+          password: 'admin123',
+        });
+
+        if (error) throw error;
+
+        setIsAuthenticated(true);
+        toast({
+          title: "Success",
+          description: "Successfully logged in as admin",
+        });
+      } catch (error) {
+        console.error('Login error:', error);
+        toast({
+          title: "Error",
+          description: "Failed to authenticate with Supabase",
+          variant: "destructive",
+        });
+      }
     } else {
       toast({
         title: "Error",
@@ -69,7 +93,10 @@ const Admin = () => {
           }
         ]);
 
-      if (error) throw error;
+      if (error) {
+        console.error('Error details:', error);
+        throw error;
+      }
 
       // Clear the input and show success message
       setDocUrl("");
