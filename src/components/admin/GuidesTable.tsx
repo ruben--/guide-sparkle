@@ -1,21 +1,17 @@
 import {
   Table,
   TableBody,
-  TableCell,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
 import { GuideTableRow } from "./GuideTableRow";
+import { Database } from "@/integrations/supabase/types";
+
+type Guide = Database['public']['Tables']['guides']['Row'];
 
 interface GuidesTableProps {
-  guides: Array<{
-    id: string;
-    title: string;
-    description: string | null;
-    content: string | null;
-    created_at: string;
-  }>;
+  guides: Guide[];
   onGuideClick: (id: string) => void;
 }
 

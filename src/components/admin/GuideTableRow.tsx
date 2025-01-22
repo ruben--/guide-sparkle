@@ -1,19 +1,15 @@
 import { TableCell, TableRow } from "@/components/ui/table";
+import { Database } from "@/integrations/supabase/types";
+
+type Guide = Database['public']['Tables']['guides']['Row'];
 
 interface GuideTableRowProps {
-  guide: {
-    id: string;
-    title: string;
-    description: string | null;
-    content: string | null;
-    created_at: string;
-  };
+  guide: Guide;
   onClick: (id: string) => void;
 }
 
 export const GuideTableRow = ({ guide, onClick }: GuideTableRowProps) => (
   <TableRow 
-    key={guide.id}
     onClick={() => onClick(guide.id)}
     className="cursor-pointer hover:bg-muted/50"
   >
