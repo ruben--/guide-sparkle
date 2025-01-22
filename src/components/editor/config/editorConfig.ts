@@ -3,7 +3,7 @@ import Link from '@tiptap/extension-link';
 import Underline from '@tiptap/extension-underline';
 import TextAlign from '@tiptap/extension-text-align';
 import { Color } from '@tiptap/extension-color';
-import TextStyle from '@tiptap/extension-text-style';
+import { TextStyle } from '@tiptap/extension-text-style';
 import FontSize from '@tiptap/extension-font-size';
 import Highlight from '@tiptap/extension-highlight';
 import { ResizableImage } from '../extensions/ResizableImage';
