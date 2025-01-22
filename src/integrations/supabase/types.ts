@@ -11,23 +11,23 @@ export type Database = {
     Tables: {
       guides: {
         Row: {
+          content: string | null
           created_at: string
           description: string | null
-          doc_url: string
           id: string
           title: string
         }
         Insert: {
+          content?: string | null
           created_at?: string
           description?: string | null
-          doc_url: string
           id?: string
           title: string
         }
         Update: {
+          content?: string | null
           created_at?: string
           description?: string | null
-          doc_url?: string
           id?: string
           title?: string
         }

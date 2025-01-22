@@ -1,21 +1,25 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { TipTap } from "@/components/TipTap";
 
 export const AddGuideForm = () => {
-  const [docUrl, setDocUrl] = useState("");
+  const [title, setTitle] = useState("");
+  const [description, setDescription] = useState("");
+  const [content, setContent] = useState("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  const handleAddDoc = async () => {
+  const handleAddGuide = async () => {
     try {
-      if (!docUrl.startsWith('https://')) {
+      if (!title) {
         toast({
           title: "Error",
-          description: "Please enter a valid URL starting with https://",
+          description: "Please enter a title",
           variant: "destructive",
         });
         return;
@@ -25,8 +29,9 @@ export const AddGuideForm = () => {
         .from('guides')
         .insert([
           { 
-            title: "New Guide",
-            doc_url: docUrl,
+            title,
+            description,
+            content,
           }
         ]);
 
@@ -35,7 +40,9 @@ export const AddGuideForm = () => {
         throw error;
       }
 
-      setDocUrl("");
+      setTitle("");
+      setDescription("");
+      setContent("");
       toast({
         title: "Success",
         description: "Guide added successfully",
@@ -43,10 +50,10 @@ export const AddGuideForm = () => {
 
       queryClient.invalidateQueries({ queryKey: ["guides"] });
     } catch (error) {
-      console.error('Error adding document:', error);
+      console.error('Error adding guide:', error);
       toast({
         title: "Error",
-        description: "Failed to add document",
+        description: "Failed to add guide",
         variant: "destructive",
       });
     }
@@ -56,11 +63,17 @@ export const AddGuideForm = () => {
     <div className="space-y-4">
       <h2 className="text-xl font-semibold">Add New Guide</h2>
       <Input
-        placeholder="Enter Google Doc URL"
-        value={docUrl}
-        onChange={(e) => setDocUrl(e.target.value)}
+        placeholder="Enter guide title"
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
       />
-      <Button onClick={handleAddDoc}>Add Document</Button>
+      <Textarea
+        placeholder="Enter guide description (optional)"
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+      />
+      <TipTap content={content} onUpdate={setContent} />
+      <Button onClick={handleAddGuide}>Add Guide</Button>
     </div>
   );
 };

@@ -36,7 +36,7 @@ export const GuidesList = () => {
           <TableRow>
             <TableHead>Title</TableHead>
             <TableHead>Description</TableHead>
-            <TableHead>Document URL</TableHead>
+            <TableHead>Content Preview</TableHead>
             <TableHead>Created At</TableHead>
           </TableRow>
         </TableHeader>
@@ -46,7 +46,7 @@ export const GuidesList = () => {
               <TableCell>{guide.title}</TableCell>
               <TableCell>{guide.description}</TableCell>
               <TableCell className="max-w-xs truncate">
-                {guide.doc_url}
+                <div dangerouslySetInnerHTML={{ __html: guide.content || '' }} />
               </TableCell>
               <TableCell>
                 {new Date(guide.created_at).toLocaleDateString()}

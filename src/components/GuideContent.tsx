@@ -2,9 +2,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Database } from "@/integrations/supabase/types";
 
 type GuideContentProps = {
-  guide: Database['public']['Tables']['guides']['Row'] & {
-    content?: string;
-  };
+  guide: Database['public']['Tables']['guides']['Row'];
 };
 
 export const GuideContent = ({ guide }: GuideContentProps) => {
@@ -17,9 +15,10 @@ export const GuideContent = ({ guide }: GuideContentProps) => {
         {guide.description && (
           <p className="text-muted-foreground mb-4">{guide.description}</p>
         )}
-        <div className="prose max-w-none whitespace-pre-wrap">
-          <div>{guide.content}</div>
-        </div>
+        <div 
+          className="prose max-w-none"
+          dangerouslySetInnerHTML={{ __html: guide.content || '' }}
+        />
       </CardContent>
     </Card>
   );
