@@ -1,8 +1,8 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
-import { useToast } from "@/components/ui/use-toast";
+import { useToast } from "@/hooks/use-toast";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -21,6 +21,22 @@ const Admin = () => {
   const navigate = useNavigate();
   const { toast } = useToast();
   const queryClient = useQueryClient();
+
+  // Check authentication status on mount
+  useEffect(() => {
+    const checkAuth = async () => {
+      const { data: { session } } = await supabase.auth.getSession();
+      setIsAuthenticated(!!session);
+    };
+    checkAuth();
+
+    // Set up auth state listener
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+      setIsAuthenticated(!!session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const { data: guides, isLoading } = useQuery({
     queryKey: ["guides"],
@@ -42,13 +58,15 @@ const Admin = () => {
   const handleLogin = async () => {
     if (code === "0129") {
       try {
-        // Sign in with a dummy email/password for admin
-        const { error } = await supabase.auth.signInWithPassword({
+        const { data, error } = await supabase.auth.signInWithPassword({
           email: 'admin@example.com',
           password: 'admin123',
         });
 
-        if (error) throw error;
+        if (error) {
+          console.error('Login error:', error);
+          throw error;
+        }
 
         setIsAuthenticated(true);
         toast({
@@ -59,7 +77,7 @@ const Admin = () => {
         console.error('Login error:', error);
         toast({
           title: "Error",
-          description: "Failed to authenticate with Supabase",
+          description: "Failed to authenticate. Please try again.",
           variant: "destructive",
         });
       }
