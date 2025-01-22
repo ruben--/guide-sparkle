@@ -23,6 +23,14 @@ export const GuideContent = ({ guide }: GuideContentProps) => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  // Reset form state when switching to edit mode
+  const handleEditClick = () => {
+    setTitle(guide.title);
+    setDescription(guide.description || "");
+    setContent(guide.content || "");
+    setIsEditing(true);
+  };
+
   const handleUpdate = async () => {
     try {
       const { error } = await supabase
@@ -98,7 +106,7 @@ export const GuideContent = ({ guide }: GuideContentProps) => {
           description={guide.description}
           content={guide.content}
           isLoggedIn={isLoggedIn}
-          onEdit={() => setIsEditing(true)}
+          onEdit={handleEditClick}
           onDelete={handleDelete}
         />
       )}
