@@ -25,11 +25,11 @@ export const AdminLogin = ({ onLoginSuccess }: AdminLoginProps) => {
 
     setIsLoading(true);
     try {
-      // First, check if there's an existing session and sign out if there is
-      const { error: signOutError } = await supabase.auth.signOut();
-      if (signOutError) {
-        console.error("Error signing out:", signOutError);
-      }
+      // First, ensure we're starting with a clean session
+      await supabase.auth.signOut();
+
+      // Add a small delay to ensure the signout is complete
+      await new Promise(resolve => setTimeout(resolve, 500));
 
       console.log("Attempting login with admin credentials...");
       const { data, error } = await supabase.auth.signInWithPassword({
@@ -41,13 +41,9 @@ export const AdminLogin = ({ onLoginSuccess }: AdminLoginProps) => {
 
       if (error) {
         console.error("Login error details:", error);
-        let errorMessage = "Failed to authenticate. Please try again.";
-        if (error.message.includes("Invalid login credentials")) {
-          errorMessage = "Invalid email or password. Please check your credentials.";
-        }
         toast({
           title: "Error",
-          description: errorMessage,
+          description: "Invalid credentials. Please ensure the admin user exists in Supabase.",
           variant: "destructive",
         });
         return;
