@@ -38,8 +38,8 @@ export const GuideViewMode = ({
         <p className="text-muted-foreground mb-4">{description}</p>
       )}
       {content && (
-        <div
-          className="prose max-w-none"
+        <div 
+          className="prose max-w-none [&_a]:text-sky-600 [&_a:hover]:text-sky-700 [&_br]:my-2 whitespace-pre-wrap"
           dangerouslySetInnerHTML={{ __html: content }}
         />
       )}
