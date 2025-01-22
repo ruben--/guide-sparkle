@@ -38,6 +38,14 @@
     font-display: swap;
 }
 
+@font-face {
+    font-family: 'Fever Type';
+    src: url('https://cdn.prod.website-files.com/66867df375da26c8c8d40575/6686818d375da26c8c8d4058_GraphikRegular.otf') format('opentype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
