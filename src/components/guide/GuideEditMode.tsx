@@ -32,7 +32,7 @@ export const GuideEditMode = ({
         <Input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
-          className="text-2xl font-bold"
+          className="text-2xl font-bold text-foreground bg-background"
         />
         <div className="flex gap-2">
           <Button variant="outline" size="icon" onClick={onCancel}>
@@ -48,7 +48,7 @@ export const GuideEditMode = ({
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           placeholder="Enter guide description"
-          className="resize-none"
+          className="resize-none text-foreground bg-background"
         />
         <TipTap content={content} onUpdate={setContent} />
       </CardContent>
