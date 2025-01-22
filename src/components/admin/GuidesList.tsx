@@ -36,14 +36,18 @@ export const GuidesList = () => {
       return data;
     },
     retry: 1,
-    onError: (error) => {
-      console.error('Query error:', error);
-      toast({
-        title: "Error",
-        description: "Failed to load guides. Please try logging in again.",
-        variant: "destructive",
-      });
-    },
+    meta: {
+      onSettled: (data, error) => {
+        if (error) {
+          console.error('Query error:', error);
+          toast({
+            title: "Error",
+            description: "Failed to load guides. Please try logging in again.",
+            variant: "destructive",
+          });
+        }
+      }
+    }
   });
 
   if (isLoading) return <p className="text-center py-4">Loading guides...</p>;
