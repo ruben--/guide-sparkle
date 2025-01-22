@@ -45,8 +45,11 @@ export const GuidesList = () => {
             <TableRow key={guide.id}>
               <TableCell>{guide.title}</TableCell>
               <TableCell>{guide.description}</TableCell>
-              <TableCell className="max-w-xs truncate">
-                <div dangerouslySetInnerHTML={{ __html: guide.content || '' }} />
+              <TableCell className="max-w-xs">
+                <div 
+                  className="truncate prose prose-sm [&_img]:max-h-20 [&_img]:w-auto [&_img]:inline-block [&_img]:object-contain"
+                  dangerouslySetInnerHTML={{ __html: guide.content || '' }} 
+                />
               </TableCell>
               <TableCell>
                 {new Date(guide.created_at).toLocaleDateString()}
