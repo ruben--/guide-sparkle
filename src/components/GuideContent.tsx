@@ -1,15 +1,13 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Database } from "@/integrations/supabase/types";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
+import { Card } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
-import { Pencil, Trash, X, Check } from "lucide-react";
-import { TipTap } from "@/components/TipTap";
+import { Database } from "@/integrations/supabase/types";
+import { GuideEditMode } from "./guide/GuideEditMode";
+import { GuideViewMode } from "./guide/GuideViewMode";
+import { useAuthState } from "@/hooks/useAuthState";
 
 type GuideContentProps = {
   guide: Database['public']['Tables']['guides']['Row'];
@@ -20,26 +18,10 @@ export const GuideContent = ({ guide }: GuideContentProps) => {
   const [title, setTitle] = useState(guide.title);
   const [description, setDescription] = useState(guide.description || "");
   const [content, setContent] = useState(guide.content || "");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const isLoggedIn = useAuthState();
   const { toast } = useToast();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
-
-  useEffect(() => {
-    // Check initial auth state
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setIsLoggedIn(!!session);
-    });
-
-    // Subscribe to auth changes
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setIsLoggedIn(!!session);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
 
   const handleUpdate = async () => {
     try {
@@ -97,77 +79,29 @@ export const GuideContent = ({ guide }: GuideContentProps) => {
     }
   };
 
-  if (isEditing) {
-    return (
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0">
-          <Input
-            value={title}
-            onChange={(e) => setTitle(e.target.value)}
-            className="text-2xl font-bold"
-          />
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setIsEditing(false)}
-            >
-              <X className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="default"
-              size="icon"
-              onClick={handleUpdate}
-            >
-              <Check className="h-4 w-4" />
-            </Button>
-          </div>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <Textarea
-            value={description}
-            onChange={(e) => setDescription(e.target.value)}
-            placeholder="Enter guide description"
-            className="resize-none"
-          />
-          <TipTap content={content} onUpdate={setContent} />
-        </CardContent>
-      </Card>
-    );
-  }
-
   return (
     <Card>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0">
-        <CardTitle className="text-2xl">{guide.title}</CardTitle>
-        {isLoggedIn && (
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              size="icon"
-              onClick={() => setIsEditing(true)}
-            >
-              <Pencil className="h-4 w-4" />
-            </Button>
-            <Button
-              variant="destructive"
-              size="icon"
-              onClick={handleDelete}
-            >
-              <Trash className="h-4 w-4" />
-            </Button>
-          </div>
-        )}
-      </CardHeader>
-      <CardContent>
-        {guide.description && (
-          <p className="text-muted-foreground mb-4">{guide.description}</p>
-        )}
-        <div 
-          className="prose max-w-none"
-          dangerouslySetInnerHTML={{ __html: guide.content || '' }}
+      {isEditing ? (
+        <GuideEditMode
+          title={title}
+          setTitle={setTitle}
+          description={description}
+          setDescription={setDescription}
+          content={content}
+          setContent={setContent}
+          onSave={handleUpdate}
+          onCancel={() => setIsEditing(false)}
         />
-      </CardContent>
+      ) : (
+        <GuideViewMode
+          title={guide.title}
+          description={guide.description}
+          content={guide.content}
+          isLoggedIn={isLoggedIn}
+          onEdit={() => setIsEditing(true)}
+          onDelete={handleDelete}
+        />
+      )}
     </Card>
   );
 };
