@@ -22,10 +22,10 @@ const TEXT_COLORS = [
 ];
 
 const TEXT_SIZES = [
-  { name: 'Small', size: '0.875em' },
-  { name: 'Normal', size: '1em' },
-  { name: 'Large', size: '1.25em' },
-  { name: 'Extra Large', size: '1.5em' },
+  { name: 'Small', size: '14px' },
+  { name: 'Normal', size: '16px' },
+  { name: 'Large', size: '20px' },
+  { name: 'Extra Large', size: '24px' },
 ];
 
 export const TextFormatToolbar = ({ editor }: TextFormatToolbarProps) => (
@@ -80,7 +80,7 @@ export const TextFormatToolbar = ({ editor }: TextFormatToolbarProps) => (
           {TEXT_COLORS.map((item) => (
             <DropdownMenuItem
               key={item.name}
-              onClick={() => editor.chain().focus().setColor(item.color).run()}
+              onClick={() => editor.chain().focus().setStyle({ color: item.color }).run()}
               className="flex items-center gap-2"
             >
               <div
@@ -103,7 +103,7 @@ export const TextFormatToolbar = ({ editor }: TextFormatToolbarProps) => (
           {TEXT_SIZES.map((item) => (
             <DropdownMenuItem
               key={item.name}
-              onClick={() => editor.chain().focus().setFontSize(item.size).run()}
+              onClick={() => editor.chain().focus().setStyle({ fontSize: item.size }).run()}
             >
               {item.name}
             </DropdownMenuItem>
