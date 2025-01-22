@@ -6,11 +6,15 @@ import Underline from '@tiptap/extension-underline';
 import TextAlign from '@tiptap/extension-text-align';
 import { Color } from '@tiptap/extension-color';
 import TextStyle from '@tiptap/extension-text-style';
+import FontSize from '@tiptap/extension-font-size';
+import Highlight from '@tiptap/extension-highlight';
 import { TextFormatToolbar } from './editor/TextFormatToolbar';
 import { AlignmentToolbar } from './editor/AlignmentToolbar';
 import { ListToolbar } from './editor/ListToolbar';
 import { HistoryToolbar } from './editor/HistoryToolbar';
 import { InsertToolbar } from './editor/InsertToolbar';
+import { DragHandle } from './editor/DragHandle';
+import { SlashMenu } from './editor/SlashMenu';
 
 interface TipTapProps {
   content: string;
@@ -31,6 +35,10 @@ export const TipTap = ({ content, onUpdate }: TipTapProps) => {
       }),
       TextStyle,
       Color,
+      FontSize,
+      Highlight.configure({
+        multicolor: true,
+      }),
     ],
     content,
     editorProps: {
@@ -49,12 +57,19 @@ export const TipTap = ({ content, onUpdate }: TipTapProps) => {
 
   return (
     <div className="border rounded-lg">
-      <div className="border-b p-2 flex flex-wrap gap-2">
-        <TextFormatToolbar editor={editor} />
-        <AlignmentToolbar editor={editor} />
-        <ListToolbar editor={editor} />
-        <HistoryToolbar editor={editor} />
-        <InsertToolbar editor={editor} />
+      <div className="border-b p-2 flex items-center gap-2">
+        <div className="flex items-center gap-1">
+          <DragHandle editor={editor} />
+          <SlashMenu editor={editor} />
+        </div>
+        <div className="h-6 w-px bg-border mx-2" />
+        <div className="flex flex-wrap gap-2">
+          <TextFormatToolbar editor={editor} />
+          <AlignmentToolbar editor={editor} />
+          <ListToolbar editor={editor} />
+          <HistoryToolbar editor={editor} />
+          <InsertToolbar editor={editor} />
+        </div>
       </div>
       <EditorContent editor={editor} />
     </div>
