@@ -12,25 +12,28 @@ interface InsertToolbarProps {
 export const InsertToolbar = ({ editor }: InsertToolbarProps) => {
   const { toast } = useToast();
 
+  const updateMetaImage = (imageUrl: string) => {
+    const metaTag = document.querySelector('meta[property="og:image"]');
+    if (metaTag) {
+      metaTag.setAttribute('content', imageUrl);
+    }
+  };
+
   const handleImageUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
 
     try {
-      // Create a temporary URL for the image to get its dimensions
       const imageUrl = URL.createObjectURL(file);
       const img = new Image();
       
       img.onload = async () => {
-        // Get natural dimensions
         const { naturalWidth, naturalHeight } = img;
-        URL.revokeObjectURL(imageUrl); // Clean up the temporary URL
+        URL.revokeObjectURL(imageUrl);
 
-        // Calculate dimensions maintaining aspect ratio
         let width = naturalWidth;
         let height = naturalHeight;
         
-        // If image is too large, scale it down while maintaining aspect ratio
         const maxWidth = 800;
         if (width > maxWidth) {
           const ratio = maxWidth / width;
@@ -50,6 +53,19 @@ export const InsertToolbar = ({ editor }: InsertToolbarProps) => {
         const { data: { publicUrl } } = supabase.storage
           .from('guide-images')
           .getPublicUrl(fileName);
+
+        // Update the meta image
+        updateMetaImage(publicUrl);
+
+        // Update the last_uploaded_image in the guides table
+        const { error: updateError } = await supabase
+          .from('guides')
+          .update({ last_uploaded_image: publicUrl })
+          .eq('id', editor.getAttributes('guide')?.id);
+
+        if (updateError) {
+          console.error('Error updating last uploaded image:', updateError);
+        }
 
         editor?.chain().focus().insertContent({
           type: 'resizableImage',
