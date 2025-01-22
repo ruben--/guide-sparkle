@@ -5,14 +5,14 @@ export const ResizableImage = Image.extend({
     return {
       ...this.parent?.(),
       width: {
-        default: '100%',
+        default: null,
         renderHTML: (attributes) => ({
           width: attributes.width,
           style: `width: ${attributes.width}`,
         }),
       },
       height: {
-        default: 'auto',
+        default: null,
         renderHTML: (attributes) => ({
           height: attributes.height,
           style: `height: ${attributes.height}`,
@@ -25,11 +25,14 @@ export const ResizableImage = Image.extend({
       const container = document.createElement('div');
       container.style.position = 'relative';
       container.style.display = 'inline-block';
+      container.style.maxWidth = '100%';
 
       const img = document.createElement('img');
       img.src = node.attrs.src;
-      img.width = parseInt(node.attrs.width) || 300;
-      img.style.height = typeof node.attrs.height === 'string' ? node.attrs.height : `${node.attrs.height}px`;
+      img.style.width = node.attrs.width || 'auto';
+      img.style.height = node.attrs.height || 'auto';
+      img.style.maxWidth = '100%';
+      img.style.height = 'auto';
       img.style.cursor = 'pointer';
 
       const resizeHandle = document.createElement('div');
@@ -53,7 +56,7 @@ export const ResizableImage = Image.extend({
         isResizing = true;
         startX = e.clientX;
         startY = e.clientY;
-        startWidth = img.width;
+        startWidth = img.getBoundingClientRect().width;
         startHeight = img.getBoundingClientRect().height;
         document.addEventListener('mousemove', resize);
         document.addEventListener('mouseup', stopResize);
@@ -65,14 +68,19 @@ export const ResizableImage = Image.extend({
 
         const width = startWidth + (e.clientX - startX);
         const height = startHeight + (e.clientY - startY);
+        const aspectRatio = startWidth / startHeight;
 
-        img.width = width;
-        img.style.height = `${height}px`;
+        // Maintain aspect ratio while resizing
+        const newWidth = width;
+        const newHeight = width / aspectRatio;
+
+        img.style.width = `${newWidth}px`;
+        img.style.height = `${newHeight}px`;
 
         if (typeof getPos === 'function') {
           editor.commands.updateAttributes('image', {
-            width: `${width}px`,
-            height: `${height}px`,
+            width: `${newWidth}px`,
+            height: `${newHeight}px`,
           });
         }
       };

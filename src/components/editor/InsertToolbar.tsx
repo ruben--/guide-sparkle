@@ -17,24 +17,40 @@ export const InsertToolbar = ({ editor }: InsertToolbarProps) => {
     if (!file) return;
 
     try {
-      const fileExt = file.name.split('.').pop();
-      const fileName = `${Math.random()}.${fileExt}`;
-      const { data: uploadData, error: uploadError } = await supabase.storage
-        .from('guide-images')
-        .upload(fileName, file);
+      // Create a temporary URL for the image to get its dimensions
+      const imageUrl = URL.createObjectURL(file);
+      const img = new Image();
+      
+      img.onload = async () => {
+        const { width, height } = img;
+        URL.revokeObjectURL(imageUrl); // Clean up the temporary URL
 
-      if (uploadError) throw uploadError;
+        const fileExt = file.name.split('.').pop();
+        const fileName = `${Math.random()}.${fileExt}`;
+        
+        const { data: uploadData, error: uploadError } = await supabase.storage
+          .from('guide-images')
+          .upload(fileName, file);
 
-      const { data: { publicUrl } } = supabase.storage
-        .from('guide-images')
-        .getPublicUrl(fileName);
+        if (uploadError) throw uploadError;
 
-      editor?.chain().focus().setImage({ src: publicUrl }).run();
+        const { data: { publicUrl } } = supabase.storage
+          .from('guide-images')
+          .getPublicUrl(fileName);
 
-      toast({
-        title: "Success",
-        description: "Image uploaded successfully",
-      });
+        editor?.chain().focus().setImage({ 
+          src: publicUrl,
+          width: `${width}px`,
+          height: `${height}px`
+        }).run();
+
+        toast({
+          title: "Success",
+          description: "Image uploaded successfully",
+        });
+      };
+
+      img.src = imageUrl;
     } catch (error) {
       console.error('Error uploading image:', error);
       toast({
