@@ -22,15 +22,16 @@ export const ResizableImageNode = ({ node, updateAttributes }: ResizableImageNod
 
   return (
     <NodeViewWrapper>
-      <div className="relative inline-block max-w-full">
+      <div className="relative inline-block group">
         <img
           src={node.attrs.src}
           style={{
             width: node.attrs.width || 'auto',
             height: node.attrs.height || 'auto',
             maxWidth: '100%',
+            objectFit: 'contain',
           }}
-          className="cursor-pointer"
+          className="cursor-pointer rounded-md"
         />
         <ResizeHandle onResize={handleResize} />
       </div>

@@ -22,8 +22,21 @@ export const InsertToolbar = ({ editor }: InsertToolbarProps) => {
       const img = new Image();
       
       img.onload = async () => {
-        const { width, height } = img;
+        // Get natural dimensions
+        const { naturalWidth, naturalHeight } = img;
         URL.revokeObjectURL(imageUrl); // Clean up the temporary URL
+
+        // Calculate dimensions maintaining aspect ratio
+        let width = naturalWidth;
+        let height = naturalHeight;
+        
+        // If image is too large, scale it down while maintaining aspect ratio
+        const maxWidth = 800;
+        if (width > maxWidth) {
+          const ratio = maxWidth / width;
+          width = maxWidth;
+          height = Math.round(height * ratio);
+        }
 
         const fileExt = file.name.split('.').pop();
         const fileName = `${Math.random()}.${fileExt}`;

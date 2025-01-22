@@ -1,56 +1,59 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 
 interface ResizeHandleProps {
   onResize: (width: string, height: string) => void;
 }
 
 export const ResizeHandle = ({ onResize }: ResizeHandleProps) => {
-  const [isResizing, setIsResizing] = useState(false);
-  const [startDimensions, setStartDimensions] = useState({ x: 0, y: 0, width: 0, height: 0 });
+  const isResizing = useRef(false);
+  const startX = useRef(0);
+  const startY = useRef(0);
+  const startWidth = useRef(0);
+  const startHeight = useRef(0);
+  const imageRef = useRef<HTMLImageElement | null>(null);
 
-  const startResize = useCallback((e: MouseEvent) => {
-    const img = (e.target as HTMLElement).parentElement?.querySelector('img');
-    if (!img) return;
-
-    setIsResizing(true);
-    setStartDimensions({
-      x: e.clientX,
-      y: e.clientY,
-      width: img.getBoundingClientRect().width,
-      height: img.getBoundingClientRect().height,
-    });
+  const handleMouseDown = useCallback((e: MouseEvent) => {
+    if (!imageRef.current) return;
+    
+    isResizing.current = true;
+    startX.current = e.clientX;
+    startY.current = e.clientY;
+    startWidth.current = imageRef.current.offsetWidth;
+    startHeight.current = imageRef.current.offsetHeight;
   }, []);
 
-  const resize = useCallback((e: MouseEvent) => {
-    if (!isResizing) return;
+  const handleMouseMove = useCallback((e: MouseEvent) => {
+    if (!isResizing.current || !imageRef.current) return;
 
-    const width = startDimensions.width + (e.clientX - startDimensions.x);
-    const aspectRatio = startDimensions.width / startDimensions.height;
-    const height = width / aspectRatio;
+    const deltaX = e.clientX - startX.current;
+    const aspectRatio = startWidth.current / startHeight.current;
+    
+    const newWidth = Math.max(100, startWidth.current + deltaX);
+    const newHeight = Math.round(newWidth / aspectRatio);
 
-    onResize(`${width}px`, `${height}px`);
-  }, [isResizing, startDimensions, onResize]);
+    onResize(`${newWidth}px`, `${newHeight}px`);
+  }, [onResize]);
 
-  const stopResize = useCallback(() => {
-    setIsResizing(false);
+  const handleMouseUp = useCallback(() => {
+    isResizing.current = false;
   }, []);
 
   useEffect(() => {
-    if (isResizing) {
-      document.addEventListener('mousemove', resize);
-      document.addEventListener('mouseup', stopResize);
-    }
+    imageRef.current = document.querySelector('img');
+
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
 
     return () => {
-      document.removeEventListener('mousemove', resize);
-      document.removeEventListener('mouseup', stopResize);
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
     };
-  }, [isResizing, resize, stopResize]);
+  }, [handleMouseMove, handleMouseUp]);
 
   return (
     <div
-      onMouseDown={startResize as any}
-      className="absolute -right-1.5 -bottom-1.5 w-3 h-3 border-2 border-black rounded-full bg-white cursor-se-resize"
+      className="absolute bottom-0 right-0 w-4 h-4 bg-white border border-gray-300 rounded-sm cursor-se-resize opacity-0 group-hover:opacity-100 transition-opacity"
+      onMouseDown={(e) => handleMouseDown(e as unknown as MouseEvent)}
     />
   );
 };
