@@ -6,6 +6,7 @@ import { useToast } from "@/hooks/use-toast";
 import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { TipTap } from "@/components/TipTap";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export const AddGuideForm = () => {
   const [title, setTitle] = useState("");
@@ -13,6 +14,7 @@ export const AddGuideForm = () => {
   const [content, setContent] = useState("");
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const isMobile = useIsMobile();
 
   const handleAddGuide = async () => {
     try {
@@ -61,19 +63,27 @@ export const AddGuideForm = () => {
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-semibold">Add New Guide</h2>
-      <Input
-        placeholder="Enter guide title"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-      />
-      <Textarea
-        placeholder="Enter guide description (optional)"
-        value={description}
-        onChange={(e) => setDescription(e.target.value)}
-      />
-      <TipTap content={content} onUpdate={setContent} />
-      <Button onClick={handleAddGuide}>Add Guide</Button>
+      <h2 className="text-lg md:text-xl font-semibold">Add New Guide</h2>
+      <div className="space-y-4">
+        <Input
+          placeholder="Enter guide title"
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          className="w-full"
+        />
+        <Textarea
+          placeholder="Enter guide description (optional)"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          className="w-full min-h-[100px]"
+        />
+        <div className={isMobile ? "w-[calc(100vw-2rem)]" : "w-full"}>
+          <TipTap content={content} onUpdate={setContent} />
+        </div>
+        <Button onClick={handleAddGuide} className="w-full md:w-auto">
+          Add Guide
+        </Button>
+      </div>
     </div>
   );
 };

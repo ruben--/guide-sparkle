@@ -15,6 +15,7 @@ import { InsertToolbar } from './editor/InsertToolbar';
 import { DragHandle } from './editor/DragHandle';
 import { SlashMenu } from './editor/SlashMenu';
 import { ResizableImage } from './editor/extensions/ResizableImage';
+import { useIsMobile } from '@/hooks/use-mobile';
 
 interface TipTapProps {
   content: string;
@@ -22,6 +23,8 @@ interface TipTapProps {
 }
 
 export const TipTap = ({ content, onUpdate }: TipTapProps) => {
+  const isMobile = useIsMobile();
+  
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -43,7 +46,7 @@ export const TipTap = ({ content, onUpdate }: TipTapProps) => {
     content,
     editorProps: {
       attributes: {
-        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[200px] p-4 border rounded-md',
+        class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[200px] p-4 border rounded-md overflow-x-auto',
       },
     },
     onUpdate: ({ editor }) => {
@@ -56,14 +59,14 @@ export const TipTap = ({ content, onUpdate }: TipTapProps) => {
   }
 
   return (
-    <div className="border rounded-lg">
-      <div className="border-b p-2 flex items-center gap-2">
+    <div className="border rounded-lg max-w-full overflow-x-auto">
+      <div className={`border-b p-2 flex ${isMobile ? 'flex-wrap' : ''} items-center gap-2`}>
         <div className="flex items-center gap-1">
           <DragHandle editor={editor} />
           <SlashMenu editor={editor} />
         </div>
         <div className="h-6 w-px bg-border mx-2" />
-        <div className="flex flex-wrap gap-2">
+        <div className={`flex flex-wrap gap-2 ${isMobile ? 'overflow-x-auto pb-2' : ''}`}>
           <TextFormatToolbar editor={editor} />
           <AlignmentToolbar editor={editor} />
           <ListToolbar editor={editor} />
@@ -71,7 +74,9 @@ export const TipTap = ({ content, onUpdate }: TipTapProps) => {
           <InsertToolbar editor={editor} />
         </div>
       </div>
-      <EditorContent editor={editor} />
+      <div className="overflow-x-auto">
+        <EditorContent editor={editor} />
+      </div>
     </div>
   );
 };

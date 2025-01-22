@@ -5,10 +5,12 @@ import { supabase } from "@/integrations/supabase/client";
 import { AdminLogin } from "@/components/admin/AdminLogin";
 import { GuidesList } from "@/components/admin/GuidesList";
 import { AddGuideForm } from "@/components/admin/AddGuideForm";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const Admin = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const navigate = useNavigate();
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -30,12 +32,12 @@ const Admin = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="container py-8">
-        <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
-        <div className="space-y-8">
+      <div className={`container ${isMobile ? 'px-4' : 'py-8'}`}>
+        <h1 className="text-2xl md:text-3xl font-bold mb-4 md:mb-8">Admin Dashboard</h1>
+        <div className="space-y-4 md:space-y-8">
           <AddGuideForm />
           <GuidesList />
-          <Button variant="outline" onClick={() => navigate("/")}>
+          <Button variant="outline" onClick={() => navigate("/")} className="w-full md:w-auto">
             Back to Guides
           </Button>
         </div>
