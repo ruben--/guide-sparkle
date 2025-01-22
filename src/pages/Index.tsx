@@ -3,11 +3,13 @@ import { SearchBar } from "@/components/SearchBar";
 import { GuideCard } from "@/components/GuideCard";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { GuideLoadingState } from "@/components/GuideLoadingState";
+import { GuideErrorState } from "@/components/GuideErrorState";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data: guides, isLoading } = useQuery({
+  const { data: guides, isLoading, error } = useQuery({
     queryKey: ["guides"],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -29,6 +31,16 @@ const Index = () => {
       (guide.description?.toLowerCase() || "").includes(searchQuery.toLowerCase())
   ) || [];
 
+  if (error) {
+    return (
+      <div className="min-h-screen bg-background">
+        <div className="container py-8">
+          <GuideErrorState message="Failed to load guides. Please try again later." />
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <div className="container py-8">
@@ -38,7 +50,9 @@ const Index = () => {
         
         <div className="grid gap-6 mt-8 md:grid-cols-2 lg:grid-cols-3">
           {isLoading ? (
-            <p>Loading guides...</p>
+            Array.from({ length: 6 }).map((_, index) => (
+              <GuideLoadingState key={index} />
+            ))
           ) : filteredGuides.length > 0 ? (
             filteredGuides.map((guide) => (
               <GuideCard 
@@ -49,7 +63,7 @@ const Index = () => {
               />
             ))
           ) : (
-            <p>No guides found</p>
+            <p className="col-span-full text-center text-gray-500">No guides found</p>
           )}
         </div>
       </div>
