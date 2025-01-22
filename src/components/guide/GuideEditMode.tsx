@@ -25,33 +25,32 @@ export const GuideEditMode = ({
   setContent,
   onSave,
   onCancel,
-}: GuideEditModeProps) => {
-  return (
-    <>
-      <CardHeader className="flex flex-row items-center justify-between space-y-0">
-        <Input
-          value={title}
-          onChange={(e) => setTitle(e.target.value)}
-          className="text-2xl font-bold text-foreground bg-background"
-        />
-        <div className="flex gap-2">
-          <Button variant="outline" size="icon" onClick={onCancel}>
-            <X className="h-4 w-4" />
-          </Button>
-          <Button variant="default" size="icon" onClick={onSave}>
-            <Check className="h-4 w-4" />
-          </Button>
-        </div>
-      </CardHeader>
-      <CardContent className="space-y-4">
-        <Textarea
-          value={description}
-          onChange={(e) => setDescription(e.target.value)}
-          placeholder="Enter guide description"
-          className="resize-none text-foreground bg-background"
-        />
-        <TipTap content={content} onUpdate={setContent} />
-      </CardContent>
-    </>
-  );
-};
+}: GuideEditModeProps) => (
+  <>
+    <CardHeader className="flex flex-row items-center justify-between space-y-0">
+      <Input
+        value={title}
+        onChange={(e) => setTitle(e.target.value)}
+        className="text-2xl font-bold"
+        placeholder="Enter guide title"
+      />
+      <div className="flex gap-2">
+        <Button variant="outline" size="icon" onClick={onCancel}>
+          <X className="h-4 w-4" />
+        </Button>
+        <Button variant="default" size="icon" onClick={onSave}>
+          <Check className="h-4 w-4" />
+        </Button>
+      </div>
+    </CardHeader>
+    <CardContent className="space-y-4">
+      <Textarea
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
+        placeholder="Enter guide description"
+        className="resize-none"
+      />
+      <TipTap content={content} onUpdate={setContent} />
+    </CardContent>
+  </>
+);

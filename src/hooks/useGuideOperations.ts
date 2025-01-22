@@ -28,11 +28,7 @@ export const useGuideOperations = (guide: Guide) => {
     try {
       const { error } = await supabase
         .from('guides')
-        .update({
-          title,
-          description,
-          content
-        })
+        .update({ title, description, content })
         .eq('id', guide.id);
 
       if (error) throw error;
@@ -41,6 +37,7 @@ export const useGuideOperations = (guide: Guide) => {
         title: "Success",
         description: "Guide updated successfully",
       });
+      
       setIsEditing(false);
       queryClient.invalidateQueries({ queryKey: ["guide", guide.id] });
       queryClient.invalidateQueries({ queryKey: ["guides"] });

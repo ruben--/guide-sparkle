@@ -4,8 +4,8 @@ import { Pencil, Trash } from "lucide-react";
 
 interface GuideViewModeProps {
   title: string;
-  description?: string;
-  content?: string;
+  description?: string | null;
+  content?: string | null;
   isLoggedIn: boolean;
   onEdit: () => void;
   onDelete: () => void;
@@ -18,31 +18,31 @@ export const GuideViewMode = ({
   isLoggedIn,
   onEdit,
   onDelete,
-}: GuideViewModeProps) => {
-  return (
-    <div className="animate-fade-in">
-      <CardHeader className="flex flex-row items-center justify-between space-y-0">
-        <CardTitle className="text-2xl">{title}</CardTitle>
-        {isLoggedIn && (
-          <div className="flex gap-2">
-            <Button variant="outline" size="icon" onClick={onEdit}>
-              <Pencil className="h-4 w-4" />
-            </Button>
-            <Button variant="destructive" size="icon" onClick={onDelete}>
-              <Trash className="h-4 w-4" />
-            </Button>
-          </div>
-        )}
-      </CardHeader>
-      <CardContent>
-        {description && (
-          <p className="text-muted-foreground mb-4">{description}</p>
-        )}
+}: GuideViewModeProps) => (
+  <div className="animate-fade-in">
+    <CardHeader className="flex flex-row items-center justify-between space-y-0">
+      <CardTitle className="text-2xl">{title}</CardTitle>
+      {isLoggedIn && (
+        <div className="flex gap-2">
+          <Button variant="outline" size="icon" onClick={onEdit}>
+            <Pencil className="h-4 w-4" />
+          </Button>
+          <Button variant="destructive" size="icon" onClick={onDelete}>
+            <Trash className="h-4 w-4" />
+          </Button>
+        </div>
+      )}
+    </CardHeader>
+    <CardContent>
+      {description && (
+        <p className="text-muted-foreground mb-4">{description}</p>
+      )}
+      {content && (
         <div
           className="prose max-w-none"
-          dangerouslySetInnerHTML={{ __html: content || "" }}
+          dangerouslySetInnerHTML={{ __html: content }}
         />
-      </CardContent>
-    </div>
-  );
-};
+      )}
+    </CardContent>
+  </div>
+);

@@ -25,6 +25,8 @@ export const GuideContent = ({ guide }: GuideContentProps) => {
     setIsEditing,
   } = useGuideOperations(guide);
 
+  if (!guide) return null;
+
   return (
     <Card>
       {isEditing ? (
