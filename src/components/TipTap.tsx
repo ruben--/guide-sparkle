@@ -27,7 +27,16 @@ export const TipTap = ({ content, onUpdate }: TipTapProps) => {
   
   const editor = useEditor({
     extensions: [
-      StarterKit,
+      StarterKit.configure({
+        bulletList: {
+          keepMarks: true,
+          keepAttributes: false,
+        },
+        orderedList: {
+          keepMarks: true,
+          keepAttributes: false,
+        },
+      }),
       ResizableImage,
       Link.configure({
         openOnClick: false,
