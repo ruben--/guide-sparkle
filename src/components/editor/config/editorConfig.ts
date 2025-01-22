@@ -58,6 +58,10 @@ export const editorProps = {
   },
   enableInputRules: true,
   enablePasteRules: true,
-  // Allow HTML content to be pasted and rendered
-  parseHTML: true,
+  transformPastedHTML: (html: string) => {
+    // Parse the HTML content instead of displaying it raw
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(html, 'text/html');
+    return doc.body.innerHTML;
+  },
 };
