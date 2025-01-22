@@ -12,6 +12,8 @@ export const initializeGoogleApi = () => {
         try {
           await window.gapi.client.init({
             apiKey: import.meta.env.VITE_GOOGLE_API_KEY,
+            clientId: import.meta.env.VITE_GOOGLE_CLIENT_ID,
+            scope: 'https://www.googleapis.com/auth/documents.readonly',
             discoveryDocs: ['https://docs.googleapis.com/$discovery/rest?version=v1'],
           });
           resolve(true);
