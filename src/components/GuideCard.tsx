@@ -12,7 +12,7 @@ export const GuideCard = ({ title, description, id }: GuideCardProps) => {
     <Link to={`/guide/${id}`}>
       <Card className="h-full hover:shadow-lg transition-all duration-200 hover:scale-[1.02] bg-[#F1F0FB] border-none">
         <CardHeader className="pb-2">
-          <CardTitle className="text-xl text-[#6E59A5]">{title}</CardTitle>
+          <CardTitle className="text-xl text-black">{title}</CardTitle>
         </CardHeader>
         <CardContent>
           <p className="text-[#8E9196] line-clamp-3">{description}</p>
