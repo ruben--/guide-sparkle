@@ -1,43 +1,17 @@
 import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Database } from "@/integrations/supabase/types";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect, useState } from "react";
 import { toast } from "@/hooks/use-toast";
+import { initializeGoogleApi, extractDocId, fetchGoogleDocContent } from "@/utils/googleApi";
+import { GuideContent } from "@/components/GuideContent";
+import { GuideLoadingState } from "@/components/GuideLoadingState";
+import { GuideErrorState } from "@/components/GuideErrorState";
 
 // Define the type for a guide with content
 type GuideWithContent = Database['public']['Tables']['guides']['Row'] & {
   content?: string;
-};
-
-// Helper function to extract document ID from Google Docs URL
-const extractDocId = (url: string) => {
-  const match = url.match(/\/d\/([a-zA-Z0-9-_]+)/);
-  return match ? match[1] : null;
-};
-
-// Initialize Google API client
-const initializeGoogleApi = () => {
-  return new Promise((resolve, reject) => {
-    if (typeof window.gapi !== 'undefined') {
-      window.gapi.load('client', async () => {
-        try {
-          await window.gapi.client.init({
-            apiKey: import.meta.env.VITE_GOOGLE_API_KEY,
-            discoveryDocs: ['https://docs.googleapis.com/$discovery/rest?version=v1'],
-          });
-          resolve(true);
-        } catch (error) {
-          console.error('Error initializing Google API:', error);
-          reject(error);
-        }
-      });
-    } else {
-      reject(new Error('Google API not loaded'));
-    }
-  });
 };
 
 export const Guide = () => {
@@ -98,24 +72,7 @@ export const Guide = () => {
           throw new Error("Invalid Google Doc URL");
         }
 
-        const response = await window.gapi.client.docs.documents.get({
-          documentId: docId
-        });
-
-        let content = "";
-        if (response.result.body?.content) {
-          content = response.result.body.content.reduce((text: string, element: any) => {
-            if (element.paragraph) {
-              element.paragraph.elements.forEach((el: any) => {
-                if (el.textRun && el.textRun.content) {
-                  text += el.textRun.content;
-                }
-              });
-            }
-            return text;
-          }, "");
-        }
-
+        const content = await fetchGoogleDocContent(docId);
         return { ...guideData, content };
       } catch (error) {
         console.error('Error fetching doc content:', error);
@@ -137,18 +94,7 @@ export const Guide = () => {
   if (isLoading) {
     return (
       <div className="container py-8">
-        <Card>
-          <CardHeader>
-            <Skeleton className="h-8 w-[250px]" />
-          </CardHeader>
-          <CardContent>
-            <div className="space-y-4">
-              <Skeleton className="h-4 w-full" />
-              <Skeleton className="h-4 w-5/6" />
-              <Skeleton className="h-4 w-4/6" />
-            </div>
-          </CardContent>
-        </Card>
+        <GuideLoadingState />
       </div>
     );
   }
@@ -156,14 +102,7 @@ export const Guide = () => {
   if (error) {
     return (
       <div className="container py-8">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl text-red-500">Error</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>Failed to load guide. Please try again later.</p>
-          </CardContent>
-        </Card>
+        <GuideErrorState />
       </div>
     );
   }
@@ -171,33 +110,14 @@ export const Guide = () => {
   if (!guide) {
     return (
       <div className="container py-8">
-        <Card>
-          <CardHeader>
-            <CardTitle className="text-2xl">Guide not found</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p>The requested guide could not be found.</p>
-          </CardContent>
-        </Card>
+        <GuideErrorState message="The requested guide could not be found." />
       </div>
     );
   }
 
   return (
     <div className="container py-8">
-      <Card>
-        <CardHeader>
-          <CardTitle className="text-2xl">{guide.title}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          {guide.description && (
-            <p className="text-muted-foreground mb-4">{guide.description}</p>
-          )}
-          <div className="prose max-w-none whitespace-pre-wrap">
-            <div>{guide.content}</div>
-          </div>
-        </CardContent>
-      </Card>
+      <GuideContent guide={guide} />
     </div>
   );
 };
