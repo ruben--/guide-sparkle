@@ -1,4 +1,5 @@
 import { NodeViewWrapper } from '@tiptap/react';
+import { ResizeHandle } from './ResizeHandle';
 
 interface ResizableImageNodeProps {
   node: {
@@ -28,7 +29,6 @@ export const ResizableImageNode = ({ node, updateAttributes }: ResizableImageNod
             width: node.attrs.width || 'auto',
             height: node.attrs.height || 'auto',
             maxWidth: '100%',
-            height: 'auto',
           }}
           className="cursor-pointer"
         />

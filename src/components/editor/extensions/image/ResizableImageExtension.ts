@@ -1,4 +1,6 @@
 import Image from '@tiptap/extension-image';
+import { NodeViewRenderer } from '@tiptap/core';
+import { ReactNodeViewRenderer } from '@tiptap/react';
 import { ResizableImageNode } from './ResizableImageNode';
 
 export const ResizableImage = Image.extend({
@@ -33,6 +35,6 @@ export const ResizableImage = Image.extend({
   },
 
   addNodeView() {
-    return ResizableImageNode;
+    return ReactNodeViewRenderer(ResizableImageNode);
   },
 });
