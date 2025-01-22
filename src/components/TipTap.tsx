@@ -28,13 +28,19 @@ export const TipTap = ({ content, onUpdate }: TipTapProps) => {
   const editor = useEditor({
     extensions: [
       StarterKit.configure({
-        bulletList: {
-          keepMarks: true,
-          keepAttributes: false,
-        },
         orderedList: {
           keepMarks: true,
-          keepAttributes: false,
+          keepAttributes: true,
+          HTMLAttributes: {
+            class: 'list-decimal pl-4'
+          }
+        },
+        bulletList: {
+          keepMarks: true,
+          keepAttributes: true,
+          HTMLAttributes: {
+            class: 'list-disc pl-4'
+          }
         },
       }),
       ResizableImage,
