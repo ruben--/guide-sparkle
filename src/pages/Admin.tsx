@@ -29,7 +29,7 @@ const Admin = () => {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background" data-route="admin">
       <div className="container py-8">
         <h1 className="text-3xl font-bold mb-8">Admin Dashboard</h1>
         <div className="space-y-8">
