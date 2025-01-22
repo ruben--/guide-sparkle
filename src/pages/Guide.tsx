@@ -4,6 +4,9 @@ import { supabase } from "@/integrations/supabase/client";
 import { GuideContent } from "@/components/GuideContent";
 import { GuideLoadingState } from "@/components/GuideLoadingState";
 import { GuideErrorState } from "@/components/GuideErrorState";
+import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
+import { ChevronLeft } from "lucide-react";
 
 export const Guide = () => {
   const { id } = useParams();
@@ -57,6 +60,16 @@ export const Guide = () => {
 
   return (
     <div className="container py-8">
+      <Button
+        variant="outline"
+        asChild
+        className="mb-6"
+      >
+        <Link to="/">
+          <ChevronLeft className="mr-2 h-4 w-4" />
+          Back to Guides
+        </Link>
+      </Button>
       <GuideContent guide={guide} />
     </div>
   );
