@@ -24,6 +24,11 @@ export const extensions = [
         class: 'list-disc pl-4'
       }
     },
+    hardBreak: {
+      HTMLAttributes: {
+        class: 'my-2'
+      }
+    },
   }),
   ResizableImage,
   Link.configure({
@@ -43,7 +48,7 @@ export const extensions = [
 
 export const editorProps = {
   attributes: {
-    class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[200px] p-4 border rounded-md overflow-x-auto',
+    class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[200px] p-4 border rounded-md overflow-x-auto whitespace-pre-wrap',
   },
   handleDOMEvents: {
     keydown: (view: any, event: KeyboardEvent) => {
@@ -59,7 +64,6 @@ export const editorProps = {
   enableInputRules: true,
   enablePasteRules: true,
   transformPastedHTML: (html: string) => {
-    // Parse the HTML content instead of displaying it raw
     const parser = new DOMParser();
     const doc = parser.parseFromString(html, 'text/html');
     return doc.body.innerHTML;
