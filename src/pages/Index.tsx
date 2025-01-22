@@ -34,7 +34,7 @@ const Index = () => {
     <div className="min-h-screen bg-background">
       <Navigation />
       <div className="container py-8">
-        <h1 className="text-4xl font-bold mb-8 text-black">Guides Portal</h1>
+        <h1 className="text-4xl font-bold mb-8 text-black text-center">Installation Guides</h1>
         
         <SearchBar onSearch={setSearchQuery} />
         
