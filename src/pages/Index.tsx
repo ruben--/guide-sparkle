@@ -3,7 +3,6 @@ import { SearchBar } from "@/components/SearchBar";
 import { GuideCard } from "@/components/GuideCard";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import { Navigation } from "@/components/Navigation";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -32,7 +31,6 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <Navigation />
       <div className="container py-8">
         <h1 className="text-4xl font-bold mb-8 text-black text-center">Installation Guides</h1>
         
