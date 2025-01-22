@@ -1,32 +1,39 @@
 import * as React from "react"
-
 import { cn } from "@/lib/utils"
+import { useIsMobile } from "@/hooks/use-mobile"
 
 const Card = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      "rounded-lg border bg-card text-card-foreground shadow-sm",
-      className
-    )}
-    {...props}
-  />
-))
+>(({ className, ...props }, ref) => {
+  const isMobile = useIsMobile();
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        "rounded-lg border bg-card text-card-foreground shadow-sm",
+        isMobile ? "border-0 shadow-none rounded-none" : "",
+        className
+      )}
+      {...props}
+    />
+  )
+})
 Card.displayName = "Card"
 
 const CardHeader = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("flex flex-col space-y-1.5 p-6", className)}
-    {...props}
-  />
-))
+>(({ className, ...props }, ref) => {
+  const isMobile = useIsMobile();
+  return (
+    <div
+      ref={ref}
+      className={cn("flex flex-col space-y-1.5", isMobile ? "px-2 py-4" : "p-6", className)}
+      {...props}
+    />
+  )
+})
 CardHeader.displayName = "CardHeader"
 
 const CardTitle = React.forwardRef<
@@ -39,7 +46,7 @@ const CardTitle = React.forwardRef<
       "text-2xl font-semibold leading-none tracking-tight",
       className
     )}
-    {...props}
+    {...props>
   />
 ))
 CardTitle.displayName = "CardTitle"
@@ -59,21 +66,35 @@ CardDescription.displayName = "CardDescription"
 const CardContent = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("p-6 pt-0", className)} {...props} />
-))
+>(({ className, ...props }, ref) => {
+  const isMobile = useIsMobile();
+  return (
+    <div 
+      ref={ref} 
+      className={cn(isMobile ? "px-2" : "p-6 pt-0", className)} 
+      {...props} 
+    />
+  )
+})
 CardContent.displayName = "CardContent"
 
 const CardFooter = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("flex items-center p-6 pt-0", className)}
-    {...props}
-  />
-))
+>(({ className, ...props }, ref) => {
+  const isMobile = useIsMobile();
+  return (
+    <div
+      ref={ref}
+      className={cn(
+        "flex items-center",
+        isMobile ? "px-2 pb-4" : "p-6 pt-0",
+        className
+      )}
+      {...props}
+    />
+  )
+})
 CardFooter.displayName = "CardFooter"
 
 export { Card, CardHeader, CardFooter, CardTitle, CardDescription, CardContent }

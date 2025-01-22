@@ -7,9 +7,11 @@ import { GuideErrorState } from "@/components/GuideErrorState";
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 export const Guide = () => {
   const { id } = useParams();
+  const isMobile = useIsMobile();
 
   const { data: guide, isLoading, error } = useQuery({
     queryKey: ["guide", id],
@@ -36,7 +38,7 @@ export const Guide = () => {
 
   if (isLoading) {
     return (
-      <div className="container py-8">
+      <div className={isMobile ? "" : "container py-8"}>
         <GuideLoadingState />
       </div>
     );
@@ -44,7 +46,7 @@ export const Guide = () => {
 
   if (error) {
     return (
-      <div className="container py-8">
+      <div className={isMobile ? "" : "container py-8"}>
         <GuideErrorState />
       </div>
     );
@@ -52,14 +54,14 @@ export const Guide = () => {
 
   if (!guide) {
     return (
-      <div className="container py-8">
+      <div className={isMobile ? "" : "container py-8"}>
         <GuideErrorState message="The requested guide could not be found." />
       </div>
     );
   }
 
   return (
-    <div className="container py-8">
+    <div className={isMobile ? "" : "container py-8"}>
       <Button
         variant="outline"
         asChild
