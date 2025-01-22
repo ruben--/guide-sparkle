@@ -5,6 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Database } from "@/integrations/supabase/types";
 import { Skeleton } from "@/components/ui/skeleton";
 import { useEffect, useState } from "react";
+import { toast } from "@/hooks/use-toast";
 
 // Define the type for a guide with content
 type GuideWithContent = Database['public']['Tables']['guides']['Row'] & {
@@ -54,6 +55,11 @@ export const Guide = () => {
         setIsGapiInitialized(true);
       } catch (error) {
         console.error('Failed to initialize Google API:', error);
+        toast({
+          title: "Error",
+          description: "Failed to initialize Google Docs integration. Please try again later.",
+          variant: "destructive",
+        });
       }
     };
     document.body.appendChild(script);
@@ -84,7 +90,7 @@ export const Guide = () => {
       if (!isGapiInitialized) {
         return {
           ...guideData,
-          content: "Initializing Google Docs integration..."
+          content: "Loading Google Docs integration..."
         };
       }
 
@@ -121,6 +127,11 @@ export const Guide = () => {
         return { ...guideData, content };
       } catch (error) {
         console.error('Error fetching doc content:', error);
+        toast({
+          title: "Error",
+          description: "Failed to load document content. Please ensure you're signed in with a Google account that has access to this document.",
+          variant: "destructive",
+        });
         return {
           ...guideData,
           content: "Failed to load document content. Please ensure you're signed in with a Google account that has access to this document."
