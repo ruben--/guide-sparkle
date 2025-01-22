@@ -1,4 +1,4 @@
-import { Bold, Italic, Underline as UnderlineIcon, Code } from 'lucide-react';
+import { Bold, Italic, Underline as UnderlineIcon, Code, CornerDownRight } from 'lucide-react';
 import { Editor } from '@tiptap/react';
 import { EditorButton } from '../EditorButton';
 
@@ -27,6 +27,11 @@ export const BasicFormatting = ({ editor }: BasicFormattingProps) => (
       onClick={() => editor.chain().focus().toggleCodeBlock().run()}
       isActive={editor.isActive('codeBlock')}
       icon={Code}
+    />
+    <EditorButton
+      onClick={() => editor.chain().focus().setHardBreak().run()}
+      icon={CornerDownRight}
+      title="Insert line break"
     />
   </div>
 );
