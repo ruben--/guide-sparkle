@@ -12,7 +12,7 @@ type GuideWithContent = Database['public']['Tables']['guides']['Row'] & {
 export const Guide = () => {
   const { id } = useParams();
 
-  const { data: guide, isLoading } = useQuery({
+  const { data: guide, isLoading } = useQuery<GuideWithContent>({
     queryKey: ["guide", id],
     queryFn: async () => {
       const { data, error } = await supabase
@@ -36,7 +36,7 @@ export const Guide = () => {
           throw error;
         }
       }
-      return data;
+      return data as GuideWithContent;
     },
   });
 
