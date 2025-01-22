@@ -12,7 +12,7 @@ const Card = React.forwardRef<
       ref={ref}
       className={cn(
         "rounded-lg border bg-card text-card-foreground shadow-sm",
-        isMobile ? "border-0 shadow-none rounded-none" : "",
+        isMobile ? "border-0 shadow-none rounded-none px-[5px]" : "",
         className
       )}
       {...props}
@@ -29,7 +29,7 @@ const CardHeader = React.forwardRef<
   return (
     <div
       ref={ref}
-      className={cn("flex flex-col space-y-1.5", isMobile ? "px-2 py-4" : "p-6", className)}
+      className={cn("flex flex-col space-y-1.5", isMobile ? "px-[5px] py-4" : "p-6", className)}
       {...props}
     />
   )
@@ -71,7 +71,7 @@ const CardContent = React.forwardRef<
   return (
     <div 
       ref={ref} 
-      className={cn(isMobile ? "px-2" : "p-6 pt-0", className)} 
+      className={cn(isMobile ? "px-[5px]" : "p-6 pt-0", className)} 
       {...props} 
     />
   )
@@ -88,7 +88,7 @@ const CardFooter = React.forwardRef<
       ref={ref}
       className={cn(
         "flex items-center",
-        isMobile ? "px-2 pb-4" : "p-6 pt-0",
+        isMobile ? "px-[5px] pb-4" : "p-6 pt-0",
         className
       )}
       {...props}
