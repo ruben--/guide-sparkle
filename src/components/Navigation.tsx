@@ -48,23 +48,32 @@ export const Navigation = () => {
 
   return (
     <nav className="border-b mb-8 py-4 bg-white">
-      <div className="container mx-auto flex justify-between items-center">
-        <div className="flex gap-6">
-          <Link to="/" className="text-lg font-semibold hover:text-primary">
-            Guides
-          </Link>
-          {isLoggedIn && (
-            <Link to="/admin" className="text-lg hover:text-primary">
-              Admin
-            </Link>
-          )}
+      <div className="container mx-auto">
+        <div className="flex flex-col items-center mb-4">
+          <img 
+            src="https://media.licdn.com/dms/image/v2/D4D0BAQFjhhGBkoBGkA/company-logo_200_200/company-logo_200_200/0/1731318042538/feverenergy_logo?e=2147483647&v=beta&t=wKLSwZDTsxJSA2Izt0BJQAND4V4cXRn8vKr2jOpezMY" 
+            alt="Fever Energy Logo" 
+            className="h-16 w-auto mb-2"
+          />
         </div>
-        <Button 
-          variant="outline" 
-          onClick={isLoggedIn ? handleLogout : handleLogin}
-        >
-          {isLoggedIn ? "Logout" : "Login"}
-        </Button>
+        <div className="flex justify-between items-center">
+          <div className="flex gap-6">
+            <Link to="/" className="text-lg font-semibold hover:text-primary">
+              Guides
+            </Link>
+            {isLoggedIn && (
+              <Link to="/admin" className="text-lg hover:text-primary">
+                Admin
+              </Link>
+            )}
+          </div>
+          <Button 
+            variant="outline" 
+            onClick={isLoggedIn ? handleLogout : handleLogin}
+          >
+            {isLoggedIn ? "Logout" : "Login"}
+          </Button>
+        </div>
       </div>
     </nav>
   );
