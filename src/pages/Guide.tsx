@@ -2,6 +2,12 @@ import { useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Database } from "@/integrations/supabase/types";
+
+// Define the type for a guide with content
+type GuideWithContent = Database['public']['Tables']['guides']['Row'] & {
+  content?: string;
+};
 
 export const Guide = () => {
   const { id } = useParams();
@@ -24,7 +30,7 @@ export const Guide = () => {
         try {
           const response = await fetch(data.doc_url);
           const content = await response.text();
-          return { ...data, content };
+          return { ...data, content } as GuideWithContent;
         } catch (error) {
           console.error('Error fetching doc content:', error);
           throw error;
