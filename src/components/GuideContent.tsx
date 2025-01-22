@@ -9,6 +9,7 @@ import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
 import { useQueryClient } from "@tanstack/react-query";
 import { Pencil, Trash, X, Check } from "lucide-react";
+import { TipTap } from "@/components/TipTap";
 
 type GuideContentProps = {
   guide: Database['public']['Tables']['guides']['Row'];
@@ -112,12 +113,7 @@ export const GuideContent = ({ guide }: GuideContentProps) => {
             placeholder="Enter guide description"
             className="resize-none"
           />
-          <Textarea
-            value={content}
-            onChange={(e) => setContent(e.target.value)}
-            placeholder="Enter guide content"
-            className="min-h-[200px] resize-none"
-          />
+          <TipTap content={content} onUpdate={setContent} />
         </CardContent>
       </Card>
     );
@@ -148,9 +144,10 @@ export const GuideContent = ({ guide }: GuideContentProps) => {
         {guide.description && (
           <p className="text-muted-foreground mb-4">{guide.description}</p>
         )}
-        <div className="prose max-w-none whitespace-pre-wrap">
-          {guide.content}
-        </div>
+        <div 
+          className="prose max-w-none"
+          dangerouslySetInnerHTML={{ __html: guide.content || '' }}
+        />
       </CardContent>
     </Card>
   );
