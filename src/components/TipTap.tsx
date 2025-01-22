@@ -4,6 +4,8 @@ import Image from '@tiptap/extension-image';
 import Link from '@tiptap/extension-link';
 import Underline from '@tiptap/extension-underline';
 import TextAlign from '@tiptap/extension-text-align';
+import { Color } from '@tiptap/extension-color';
+import TextStyle from '@tiptap/extension-text-style';
 import { TextFormatToolbar } from './editor/TextFormatToolbar';
 import { AlignmentToolbar } from './editor/AlignmentToolbar';
 import { ListToolbar } from './editor/ListToolbar';
@@ -27,6 +29,8 @@ export const TipTap = ({ content, onUpdate }: TipTapProps) => {
       TextAlign.configure({
         types: ['heading', 'paragraph'],
       }),
+      TextStyle,
+      Color,
     ],
     content,
     editorProps: {

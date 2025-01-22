@@ -1,10 +1,9 @@
 import { useState } from "react";
-import { Button } from "@/components/ui/button";
 import { SearchBar } from "@/components/SearchBar";
 import { GuideCard } from "@/components/GuideCard";
-import { Link } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
+import { Navigation } from "@/components/Navigation";
 
 const Index = () => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -33,13 +32,9 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <Navigation />
       <div className="container py-8">
-        <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold">Guides Portal</h1>
-          <Link to="/admin">
-            <Button variant="outline">Admin</Button>
-          </Link>
-        </div>
+        <h1 className="text-4xl font-bold mb-8 text-[#6E59A5]">Guides Portal</h1>
         
         <SearchBar onSearch={setSearchQuery} />
         
