@@ -3,6 +3,7 @@ import { Input } from "@/components/ui/input";
 import { useState } from "react";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useNavigate } from "react-router-dom";
 
 interface AdminLoginProps {
   onLoginSuccess: () => void;
@@ -12,6 +13,7 @@ export const AdminLogin = ({ onLoginSuccess }: AdminLoginProps) => {
   const [code, setCode] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const { toast } = useToast();
+  const navigate = useNavigate();
 
   const handleLogin = async () => {
     if (code !== "0129") {
@@ -56,6 +58,7 @@ export const AdminLogin = ({ onLoginSuccess }: AdminLoginProps) => {
           title: "Success",
           description: "Successfully logged in as admin",
         });
+        navigate("/admin");
       } else {
         throw new Error("No user data received");
       }
@@ -73,7 +76,7 @@ export const AdminLogin = ({ onLoginSuccess }: AdminLoginProps) => {
 
   return (
     <div className="min-h-screen bg-background flex items-center justify-center">
-      <div className="w-full max-w-md space-y-4 p-6">
+      <div className="w-full max-w-md space-y-4 p-6 border border-black">
         <h1 className="text-2xl font-bold text-center mb-6">Admin Login</h1>
         <Input
           type="password"
@@ -81,9 +84,10 @@ export const AdminLogin = ({ onLoginSuccess }: AdminLoginProps) => {
           value={code}
           onChange={(e) => setCode(e.target.value)}
           disabled={isLoading}
+          className="rounded-none border-black"
         />
         <Button 
-          className="w-full" 
+          className="w-full rounded-none border-black" 
           onClick={handleLogin}
           disabled={isLoading}
         >
