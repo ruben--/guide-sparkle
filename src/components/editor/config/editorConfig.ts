@@ -53,4 +53,11 @@ export const editorProps = {
       return false;
     },
   },
+  parseOptions: {
+    preserveWhitespace: 'full',
+  },
+  enableInputRules: true,
+  enablePasteRules: true,
+  // Allow HTML content to be pasted and rendered
+  parseHTML: true,
 };
