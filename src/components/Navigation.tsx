@@ -47,7 +47,7 @@ export const Navigation = () => {
   };
 
   return (
-    <nav className="border-b mb-8 py-4 bg-white">
+    <nav className="border-b border-black mb-8 py-4 bg-white">
       <div className="container mx-auto">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-6">
@@ -68,6 +68,7 @@ export const Navigation = () => {
           <Button 
             variant="outline" 
             onClick={isLoggedIn ? handleLogout : handleLogin}
+            className="rounded-none border-black"
           >
             {isLoggedIn ? "Logout" : "Login"}
           </Button>
