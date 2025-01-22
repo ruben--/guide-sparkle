@@ -1,3 +1,43 @@
+@font-face {
+    font-family: 'Fever Type';
+    src: url('https://cdn.prod.website-files.com/66867df375da26c8c8d40575/6686818de8082b217a4e583f_GraphikMedium.otf') format('opentype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Fever Type';
+    src: url('https://cdn.prod.website-files.com/66867df375da26c8c8d40575/6686818dc1045662510ea72e_GraphikThinItalic.otf') format('opentype');
+    font-weight: 100;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Fever Type';
+    src: url('https://cdn.prod.website-files.com/66867df375da26c8c8d40575/6686818dcb1583e376702d82_GraphikBlackItalic.otf') format('opentype');
+    font-weight: 900;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Fever Type';
+    src: url('https://cdn.prod.website-files.com/66867df375da26c8c8d40575/6686818d7da154ec616bcdd3_GraphikLightItalic.otf') format('opentype');
+    font-weight: 300;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Fever Type';
+    src: url('https://cdn.prod.website-files.com/66867df375da26c8c8d40575/6686818dc5c6c7b40892f3ef_GraphikSemibold.otf') format('opentype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
 #root {
   max-width: 1280px;
   margin: 0 auto;
