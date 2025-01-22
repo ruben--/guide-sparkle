@@ -27,10 +27,14 @@
   }
 
   * {
-    @apply font-fever;
+    @apply font-graphik;
   }
 
   h1, h2, h3, h4, h5, h6 {
-    @apply font-fever;
+    @apply font-graphik;
+  }
+
+  body {
+    font-family: 'Graphik', sans-serif !important;
   }
 }

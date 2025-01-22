@@ -19,8 +19,8 @@ export default {
     },
     extend: {
       fontFamily: {
-        sans: ["Inter", "sans-serif"],
-        fever: ["Fever Type", "sans-serif"],
+        sans: ['Graphik', 'sans-serif'],
+        graphik: ['Graphik', 'sans-serif'],
       },
       colors: {
         border: "hsl(var(--border))",
