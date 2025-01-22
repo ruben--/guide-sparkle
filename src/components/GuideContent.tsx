@@ -3,7 +3,6 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Database } from "@/integrations/supabase/types";
-import { TipTap } from "@/components/TipTap";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
@@ -113,7 +112,12 @@ export const GuideContent = ({ guide }: GuideContentProps) => {
             placeholder="Enter guide description"
             className="resize-none"
           />
-          <TipTap content={content} onUpdate={setContent} />
+          <Textarea
+            value={content}
+            onChange={(e) => setContent(e.target.value)}
+            placeholder="Enter guide content"
+            className="min-h-[200px] resize-none"
+          />
         </CardContent>
       </Card>
     );
@@ -144,10 +148,9 @@ export const GuideContent = ({ guide }: GuideContentProps) => {
         {guide.description && (
           <p className="text-muted-foreground mb-4">{guide.description}</p>
         )}
-        <div 
-          className="prose max-w-none"
-          dangerouslySetInnerHTML={{ __html: guide.content || '' }}
-        />
+        <div className="prose max-w-none whitespace-pre-wrap">
+          {guide.content}
+        </div>
       </CardContent>
     </Card>
   );
