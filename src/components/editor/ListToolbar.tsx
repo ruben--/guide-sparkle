@@ -9,13 +9,25 @@ interface ListToolbarProps {
 export const ListToolbar = ({ editor }: ListToolbarProps) => (
   <div className="flex gap-1 items-center border-r pr-2">
     <EditorButton
-      onClick={() => editor.chain().focus().toggleBulletList().run()}
+      onClick={() => {
+        if (editor.isActive('bulletList')) {
+          editor.chain().focus().liftListItem('listItem').run();
+        } else {
+          editor.chain().focus().wrapInList('bulletList').run();
+        }
+      }}
       isActive={editor.isActive('bulletList')}
       icon={List}
       title="Bullet List"
     />
     <EditorButton
-      onClick={() => editor.chain().focus().toggleOrderedList().run()}
+      onClick={() => {
+        if (editor.isActive('orderedList')) {
+          editor.chain().focus().liftListItem('listItem').run();
+        } else {
+          editor.chain().focus().wrapInList('orderedList').run();
+        }
+      }}
       isActive={editor.isActive('orderedList')}
       icon={ListOrdered}
       title="Numbered List"

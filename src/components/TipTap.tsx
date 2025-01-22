@@ -58,10 +58,18 @@ export const TipTap = ({ content, onUpdate }: TipTapProps) => {
         multicolor: true,
       }),
     ],
-    content,
     editorProps: {
       attributes: {
         class: 'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none min-h-[200px] p-4 border rounded-md overflow-x-auto',
+      },
+      handleDOMEvents: {
+        keydown: (view, event) => {
+          // Prevent default behavior for Tab key to avoid unwanted indentation
+          if (event.key === 'Tab') {
+            return true;
+          }
+          return false;
+        },
       },
     },
     onUpdate: ({ editor }) => {
