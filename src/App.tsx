@@ -1,13 +1,14 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { Outlet, createBrowserRouter, RouterProvider, useRouteError } from "react-router-dom";
+import { Outlet, createBrowserRouter, RouterProvider, useRouteError, Navigate } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import Admin from "@/pages/Admin";
 import { AdminLogin } from "@/components/admin/AdminLogin";
 import { GuideErrorState } from "@/components/GuideErrorState";
 import Index from "./pages/Index";
 import { Guide } from "./pages/Guide";
+import { useAuthState } from "./hooks/useAuthState";
 
 const ErrorBoundary = () => {
   const error = useRouteError() as any;
@@ -18,6 +19,16 @@ const ErrorBoundary = () => {
       />
     </div>
   );
+};
+
+const ProtectedRoute = ({ children }: { children: React.ReactNode }) => {
+  const isLoggedIn = useAuthState();
+  
+  if (!isLoggedIn) {
+    return <Navigate to="/auth" replace />;
+  }
+  
+  return <>{children}</>;
 };
 
 const Layout = () => (
@@ -42,11 +53,15 @@ const router = createBrowserRouter([
       },
       {
         path: "/admin",
-        element: <Admin />,
+        element: (
+          <ProtectedRoute>
+            <Admin />
+          </ProtectedRoute>
+        ),
       },
       {
         path: "/auth",
-        element: <AdminLogin onLoginSuccess={() => window.location.href = "/admin"} />,
+        element: <AdminLogin onLoginSuccess={() => null} />,
       },
     ],
   },

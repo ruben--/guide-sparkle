@@ -53,11 +53,12 @@ export const AdminLogin = ({ onLoginSuccess }: AdminLoginProps) => {
 
       if (data.user && data.session) {
         console.log("Login successful, user:", data.user.id);
-        onLoginSuccess();
         toast({
           title: "Success",
           description: "Successfully logged in as admin",
         });
+        onLoginSuccess();
+        // Use navigate instead of window.location to prevent page reload
         navigate("/admin");
       } else {
         throw new Error("No user data received");
