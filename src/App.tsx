@@ -1,14 +1,13 @@
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { Outlet, createBrowserRouter, RouterProvider, useRouteError } from "react-router-dom";
 import { Navigation } from "@/components/Navigation";
 import Admin from "@/pages/Admin";
 import { AdminLogin } from "@/components/admin/AdminLogin";
 import { GuideErrorState } from "@/components/GuideErrorState";
-
-const queryClient = new QueryClient();
+import Index from "./pages/Index";
+import { Guide } from "./pages/Guide";
 
 const ErrorBoundary = () => {
   const error = useRouteError() as any;
@@ -35,11 +34,11 @@ const router = createBrowserRouter([
     children: [
       {
         path: "/",
-        element: <div>Index Component</div>,
+        element: <Index />,
       },
       {
         path: "/guide/:id",
-        element: <div>Guide Component</div>,
+        element: <Guide />,
       },
       {
         path: "/admin",
@@ -54,13 +53,11 @@ const router = createBrowserRouter([
 ]);
 
 const App = () => (
-  <QueryClientProvider client={queryClient}>
-    <TooltipProvider>
-      <RouterProvider router={router} />
-      <Toaster />
-      <Sonner />
-    </TooltipProvider>
-  </QueryClientProvider>
+  <TooltipProvider>
+    <RouterProvider router={router} />
+    <Toaster />
+    <Sonner />
+  </TooltipProvider>
 );
 
 export default App;
