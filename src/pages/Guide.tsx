@@ -18,71 +18,114 @@ const extractDocId = (url: string) => {
 export const Guide = () => {
   const { id } = useParams();
 
-  const { data: guide, isLoading } = useQuery<GuideWithContent>({
+  const { data: guide, isLoading, error } = useQuery<GuideWithContent>({
     queryKey: ["guide", id],
     queryFn: async () => {
       // First fetch the guide data from Supabase
-      const { data: guideData, error } = await supabase
+      const { data: guideData, error: supabaseError } = await supabase
         .from("guides")
         .select("*")
         .eq("id", id)
-        .maybeSingle();
+        .single();
       
-      if (error) {
-        console.error('Error fetching guide:', error);
-        throw error;
+      if (supabaseError) {
+        console.error('Error fetching guide:', supabaseError);
+        throw supabaseError;
       }
 
-      if (guideData) {
-        try {
-          // Extract the document ID from the URL
-          const docId = extractDocId(guideData.doc_url);
-          if (!docId) {
-            throw new Error("Invalid Google Doc URL");
-          }
+      if (!guideData) {
+        throw new Error("Guide not found");
+      }
 
-          // Fetch the document content using Google Docs API
-          const response = await fetch(
-            `https://docs.googleapis.com/v1/documents/${docId}?key=${process.env.GOOGLE_API_KEY}`
-          );
-          
-          if (!response.ok) {
-            throw new Error("Failed to fetch document content");
-          }
-
-          const docData = await response.json();
-          
-          // Extract text content from the document
-          let content = "";
-          if (docData.body && docData.body.content) {
-            content = docData.body.content.reduce((text: string, element: any) => {
-              if (element.paragraph) {
-                element.paragraph.elements.forEach((el: any) => {
-                  if (el.textRun && el.textRun.content) {
-                    text += el.textRun.content;
-                  }
-                });
-              }
-              return text;
-            }, "");
-          }
-
-          return { ...guideData, content } as GuideWithContent;
-        } catch (error) {
-          console.error('Error fetching doc content:', error);
-          throw error;
+      try {
+        // Extract the document ID from the URL
+        const docId = extractDocId(guideData.doc_url);
+        if (!docId) {
+          throw new Error("Invalid Google Doc URL");
         }
+
+        // Fetch the document content using Google Docs API
+        const response = await fetch(
+          `https://docs.googleapis.com/v1/documents/${docId}?key=${import.meta.env.VITE_GOOGLE_API_KEY}`
+        );
+        
+        if (!response.ok) {
+          throw new Error("Failed to fetch document content");
+        }
+
+        const docData = await response.json();
+        
+        // Extract text content from the document
+        let content = "";
+        if (docData.body && docData.body.content) {
+          content = docData.body.content.reduce((text: string, element: any) => {
+            if (element.paragraph) {
+              element.paragraph.elements.forEach((el: any) => {
+                if (el.textRun && el.textRun.content) {
+                  text += el.textRun.content;
+                }
+              });
+            }
+            return text;
+          }, "");
+        }
+
+        return { ...guideData, content };
+      } catch (error) {
+        console.error('Error fetching doc content:', error);
+        // Return the guide data even if we couldn't fetch the content
+        return { ...guideData, content: "Failed to load document content" };
       }
-      return guideData as GuideWithContent;
     },
   });
 
   if (isLoading) {
-    return <div className="container py-8">Loading...</div>;
+    return (
+      <div className="container py-8">
+        <Card className="animate-pulse">
+          <CardHeader>
+            <div className="h-8 bg-gray-200 rounded w-1/3"></div>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-4">
+              <div className="h-4 bg-gray-200 rounded w-full"></div>
+              <div className="h-4 bg-gray-200 rounded w-5/6"></div>
+              <div className="h-4 bg-gray-200 rounded w-4/6"></div>
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="container py-8">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl text-red-500">Error</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>Failed to load guide. Please try again later.</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   if (!guide) {
-    return <div className="container py-8">Guide not found</div>;
+    return (
+      <div className="container py-8">
+        <Card>
+          <CardHeader>
+            <CardTitle className="text-2xl">Guide not found</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <p>The requested guide could not be found.</p>
+          </CardContent>
+        </Card>
+      </div>
+    );
   }
 
   return (
