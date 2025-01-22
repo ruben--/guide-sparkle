@@ -25,6 +25,12 @@ export const AdminLogin = ({ onLoginSuccess }: AdminLoginProps) => {
 
     setIsLoading(true);
     try {
+      // First, check if there's an existing session and sign out if there is
+      const { error: signOutError } = await supabase.auth.signOut();
+      if (signOutError) {
+        console.error("Error signing out:", signOutError);
+      }
+
       console.log("Attempting login with admin credentials...");
       const { data, error } = await supabase.auth.signInWithPassword({
         email: "admin@example.com",
@@ -35,7 +41,16 @@ export const AdminLogin = ({ onLoginSuccess }: AdminLoginProps) => {
 
       if (error) {
         console.error("Login error details:", error);
-        throw error;
+        let errorMessage = "Failed to authenticate. Please try again.";
+        if (error.message.includes("Invalid login credentials")) {
+          errorMessage = "Invalid email or password. Please check your credentials.";
+        }
+        toast({
+          title: "Error",
+          description: errorMessage,
+          variant: "destructive",
+        });
+        return;
       }
 
       if (data.user && data.session) {
@@ -52,7 +67,7 @@ export const AdminLogin = ({ onLoginSuccess }: AdminLoginProps) => {
       console.error("Login error:", error);
       toast({
         title: "Error",
-        description: "Failed to authenticate. Please try again.",
+        description: "An unexpected error occurred. Please try again.",
         variant: "destructive",
       });
     } finally {
