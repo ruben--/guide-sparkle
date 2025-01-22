@@ -2,6 +2,7 @@ import { useEditor, EditorContent } from '@tiptap/react';
 import { extensions, editorProps } from './editor/config/editorConfig';
 import { EditorToolbar } from './editor/EditorToolbar';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useEffect } from 'react';
 
 interface TipTapProps {
   content: string;
@@ -14,10 +15,21 @@ export const TipTap = ({ content, onUpdate }: TipTapProps) => {
   const editor = useEditor({
     extensions,
     editorProps,
+    content: content,
     onUpdate: ({ editor }) => {
       onUpdate(editor.getHTML());
     },
   });
+
+  // Update editor content when content prop changes
+  useEffect(() => {
+    if (editor && content) {
+      // Only update if the content is different to avoid cursor jumping
+      if (editor.getHTML() !== content) {
+        editor.commands.setContent(content);
+      }
+    }
+  }, [editor, content]);
 
   if (!editor) {
     return null;
