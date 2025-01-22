@@ -9,8 +9,8 @@ interface GuideCardProps {
 
 export const GuideCard = ({ title, description, id }: GuideCardProps) => {
   return (
-    <Link to={`/guide/${id}`}>
-      <Card className="h-full hover:shadow-lg transition-all duration-200 hover:scale-[1.02] border-[1px] border-black rounded-none">
+    <Link to={`/guide/${id}`} className="w-full">
+      <Card className="w-full hover:shadow-lg transition-all duration-200 hover:scale-[1.02] border-[1px] border-black rounded-none">
         <CardHeader className="pb-2">
           <CardTitle className="text-xl text-black text-center">{title}</CardTitle>
         </CardHeader>

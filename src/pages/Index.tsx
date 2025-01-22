@@ -48,7 +48,7 @@ const Index = () => {
         
         <SearchBar onSearch={setSearchQuery} />
         
-        <div className="grid gap-6 mt-8 md:grid-cols-2 lg:grid-cols-3">
+        <div className="flex flex-col gap-6 mt-8">
           {isLoading ? (
             Array.from({ length: 6 }).map((_, index) => (
               <GuideLoadingState key={index} />
@@ -63,7 +63,7 @@ const Index = () => {
               />
             ))
           ) : (
-            <p className="col-span-full text-center text-gray-500">No guides found</p>
+            <p className="text-center text-gray-500">No guides found</p>
           )}
         </div>
       </div>
