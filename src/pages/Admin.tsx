@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/components/ui/use-toast";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import {
   Table,
@@ -20,6 +20,7 @@ const Admin = () => {
   const [docUrl, setDocUrl] = useState("");
   const navigate = useNavigate();
   const { toast } = useToast();
+  const queryClient = useQueryClient();
 
   const { data: guides, isLoading } = useQuery({
     queryKey: ["guides"],
@@ -47,13 +48,46 @@ const Admin = () => {
     }
   };
 
-  const handleAddDoc = () => {
-    // Here we would integrate with Google Docs API
-    toast({
-      title: "Success",
-      description: "Document added successfully",
-    });
-    setDocUrl("");
+  const handleAddDoc = async () => {
+    try {
+      // Basic URL validation
+      if (!docUrl.startsWith('https://')) {
+        toast({
+          title: "Error",
+          description: "Please enter a valid URL starting with https://",
+          variant: "destructive",
+        });
+        return;
+      }
+
+      const { error } = await supabase
+        .from('guides')
+        .insert([
+          { 
+            title: "New Guide", // Default title
+            doc_url: docUrl,
+          }
+        ]);
+
+      if (error) throw error;
+
+      // Clear the input and show success message
+      setDocUrl("");
+      toast({
+        title: "Success",
+        description: "Guide added successfully",
+      });
+
+      // Refresh the guides list
+      queryClient.invalidateQueries({ queryKey: ["guides"] });
+    } catch (error) {
+      console.error('Error adding document:', error);
+      toast({
+        title: "Error",
+        description: "Failed to add document",
+        variant: "destructive",
+      });
+    }
   };
 
   if (!isAuthenticated) {
