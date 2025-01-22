@@ -3,6 +3,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { GuidesTable } from "./GuidesTable";
+import { GuideLoadingState } from "@/components/GuideLoadingState";
+import { GuideErrorState } from "@/components/GuideErrorState";
 
 export const GuidesList = () => {
   const navigate = useNavigate();
@@ -43,15 +45,23 @@ export const GuidesList = () => {
 
         console.info('Successfully fetched guides:', data.length);
         return data;
-      } catch (error) {
+      } catch (error: any) {
         console.error('Error in query function:', error);
+        // Check if it's a network error
+        if (error.message === "Failed to fetch") {
+          throw new Error("Network error - Please check your connection and try again");
+        }
         throw error;
       }
     },
-    retry: 3,
+    retry: (failureCount, error: any) => {
+      // Don't retry for auth errors, but retry up to 3 times for network errors
+      if (error?.message === "Not authenticated") return false;
+      return failureCount < 3;
+    },
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     meta: {
-      onSettled: (data, error) => {
+      onSettled: (data, error: any) => {
         if (error) {
           console.error('Query error:', error);
           if (error.message === "Not authenticated") {
@@ -59,7 +69,7 @@ export const GuidesList = () => {
           } else {
             toast({
               title: "Error",
-              description: "Failed to load guides. Please try logging in again.",
+              description: error.message || "Failed to load guides. Please try again later.",
               variant: "destructive",
             });
           }
@@ -68,20 +78,33 @@ export const GuidesList = () => {
     }
   });
 
-  if (isLoading) return (
-    <div className="flex items-center justify-center py-8">
-      <p className="text-muted-foreground">Loading guides...</p>
-    </div>
-  );
+  if (isLoading) {
+    return (
+      <div className="space-y-4">
+        <h2 className="text-xl font-semibold">Loading Guides</h2>
+        <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {[...Array(3)].map((_, i) => (
+            <GuideLoadingState key={i} />
+          ))}
+        </div>
+      </div>
+    );
+  }
 
-  if (error) return (
-    <div className="flex flex-col items-center justify-center py-8 space-y-4">
-      <p className="text-red-500">Error loading guides</p>
-      <p className="text-sm text-muted-foreground">
-        Please ensure you're logged in and try again
-      </p>
-    </div>
-  );
+  if (error) {
+    return (
+      <div className="space-y-4">
+        <h2 className="text-xl font-semibold">Error Loading Guides</h2>
+        <GuideErrorState 
+          message={
+            error instanceof Error 
+              ? error.message 
+              : "Failed to load guides. Please try again later."
+          } 
+        />
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-4">
