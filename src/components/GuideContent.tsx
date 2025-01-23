@@ -10,7 +10,7 @@ type GuideContentProps = {
 };
 
 export const GuideContent = ({ guide }: GuideContentProps) => {
-  const isLoggedIn = useAuthState();
+  const { isLoggedIn } = useAuthState();
   const {
     isEditing,
     title,
