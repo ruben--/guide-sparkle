@@ -10,39 +10,28 @@ export const useGuidesList = () => {
   return useQuery({
     queryKey: ["guides"],
     queryFn: async () => {
-      const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
-      
-      if (sessionError) throw new Error("Authentication error");
-
-      if (!sessionData.session) {
-        throw new Error("Not authenticated");
-      }
-
       const { data, error: guidesError } = await supabase
         .from("guides")
         .select("*")
         .order('created_at', { ascending: false });
       
-      if (guidesError) throw guidesError;
+      if (guidesError) {
+        console.error('Error fetching guides:', guidesError);
+        throw guidesError;
+      }
+      
       return data || [];
     },
-    retry: (failureCount, error: any) => {
-      if (error?.message === "Not authenticated") return false;
-      return failureCount < 3;
-    },
+    retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
     meta: {
       onSettled: (data, error: any) => {
         if (error) {
-          if (error.message === "Not authenticated") {
-            navigate("/auth");
-          } else {
-            toast({
-              title: "Error",
-              description: error.message || "Failed to load guides",
-              variant: "destructive",
-            });
-          }
+          toast({
+            title: "Error",
+            description: error.message || "Failed to load guides",
+            variant: "destructive",
+          });
         }
       }
     }
