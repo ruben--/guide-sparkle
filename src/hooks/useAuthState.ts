@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
 
 export const useAuthState = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState<boolean>(false);
 
   useEffect(() => {
     // Check initial auth state
@@ -20,5 +20,5 @@ export const useAuthState = () => {
     return () => subscription.unsubscribe();
   }, []);
 
-  return isLoggedIn;
+  return { isLoggedIn };
 };

@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SearchBar } from "@/components/SearchBar";
 import { GuideCard } from "@/components/GuideCard";
@@ -12,11 +13,18 @@ const Index = () => {
   const navigate = useNavigate();
   const { data: guides, isLoading, error } = useGuidesList();
   const { isLoggedIn } = useAuthState();
+  const [searchQuery, setSearchQuery] = useState("");
+
+  const filteredGuides = guides?.filter(
+    (guide) =>
+      guide.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      (guide.description?.toLowerCase() || "").includes(searchQuery.toLowerCase())
+  ) || [];
 
   if (isLoading) {
     return (
       <div className="container py-8 space-y-8">
-        <SearchBar />
+        <SearchBar onSearch={setSearchQuery} />
         <GuideLoadingState />
       </div>
     );
@@ -25,7 +33,7 @@ const Index = () => {
   if (error) {
     return (
       <div className="container py-8 space-y-8">
-        <SearchBar />
+        <SearchBar onSearch={setSearchQuery} />
         <GuideErrorState 
           message={
             error instanceof Error 
@@ -39,10 +47,15 @@ const Index = () => {
 
   return (
     <div className="container py-8 space-y-8">
-      <SearchBar />
+      <SearchBar onSearch={setSearchQuery} />
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {guides?.map((guide) => (
-          <GuideCard key={guide.id} guide={guide} />
+        {filteredGuides.map((guide) => (
+          <GuideCard 
+            key={guide.id}
+            id={guide.id}
+            title={guide.title}
+            description={guide.description || ""}
+          />
         ))}
       </div>
       {isLoggedIn && (
