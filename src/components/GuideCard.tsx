@@ -19,7 +19,7 @@ export const GuideCard = ({ title, description, id }: GuideCardProps) => {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-gray-500 line-clamp-3">{description}</p>
+          <p className="text-gray-500 line-clamp-3 mb-4">{description}</p>
         </CardContent>
       </Card>
     </Link>
