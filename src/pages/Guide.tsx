@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
+import { GuideCard } from "@/components/GuideCard";
 
 export const Guide = () => {
   const { id } = useParams();
@@ -32,6 +33,26 @@ export const Guide = () => {
       }
 
       return guideData;
+    },
+    enabled: Boolean(id)
+  });
+
+  const { data: otherGuides } = useQuery({
+    queryKey: ["other-guides", id],
+    queryFn: async () => {
+      const { data, error: guidesError } = await supabase
+        .from("guides")
+        .select("*")
+        .neq("id", id)
+        .order('created_at', { ascending: false })
+        .limit(3);
+      
+      if (guidesError) {
+        console.error('Error fetching other guides:', guidesError);
+        throw guidesError;
+      }
+      
+      return data || [];
     },
     enabled: Boolean(id)
   });
@@ -73,6 +94,22 @@ export const Guide = () => {
         </Link>
       </Button>
       <GuideContent guide={guide} />
+      
+      {otherGuides && otherGuides.length > 0 && (
+        <div className="mt-12">
+          <h2 className="text-2xl font-semibold mb-6">Other Guides</h2>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {otherGuides.map((otherGuide) => (
+              <GuideCard
+                key={otherGuide.id}
+                id={otherGuide.id}
+                title={otherGuide.title}
+                description={otherGuide.description || ""}
+              />
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };
