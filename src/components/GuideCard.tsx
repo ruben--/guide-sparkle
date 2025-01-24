@@ -1,5 +1,6 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Link } from "react-router-dom";
+import { ArrowRight } from "lucide-react";
 
 interface GuideCardProps {
   title: string;
@@ -9,13 +10,16 @@ interface GuideCardProps {
 
 export const GuideCard = ({ title, description, id }: GuideCardProps) => {
   return (
-    <Link to={`/guide/${id}`} className="w-full">
-      <Card className="w-full hover:shadow-lg transition-all duration-200 hover:scale-[1.02] border-[1px] border-black rounded-none">
+    <Link to={`/guide/${id}`} className="block group">
+      <Card className="h-full border-2 border-black rounded-none hover:bg-gray-50 transition-all duration-200">
         <CardHeader className="pb-2">
-          <CardTitle className="text-xl text-black text-center">{title}</CardTitle>
+          <CardTitle className="text-xl font-medium tracking-tight text-black group-hover:translate-x-1 transition-transform">
+            {title}
+            <ArrowRight className="inline-block ml-2 h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity" />
+          </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-[#8E9196] line-clamp-3 text-center">{description}</p>
+          <p className="text-gray-500 line-clamp-3">{description}</p>
         </CardContent>
       </Card>
     </Link>
