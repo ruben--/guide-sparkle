@@ -11,7 +11,7 @@ export const SearchBar = ({ onSearch }: SearchBarProps) => {
       <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground" />
       <Input
         className="pl-10"
-        placeholder="Search guides..."
+        placeholder="Sök guider..."
         onChange={(e) => onSearch(e.target.value)}
       />
     </div>
