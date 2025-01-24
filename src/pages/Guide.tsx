@@ -59,7 +59,7 @@ export const Guide = () => {
 
   if (isLoading) {
     return (
-      <div className={isMobile ? "" : "container py-8"}>
+      <div className={`${isMobile ? "px-4" : "container"} py-8 max-w-4xl mx-auto`}>
         <GuideLoadingState />
       </div>
     );
@@ -67,7 +67,7 @@ export const Guide = () => {
 
   if (error) {
     return (
-      <div className={isMobile ? "" : "container py-8"}>
+      <div className={`${isMobile ? "px-4" : "container"} py-8 max-w-4xl mx-auto`}>
         <GuideErrorState />
       </div>
     );
@@ -75,41 +75,46 @@ export const Guide = () => {
 
   if (!guide) {
     return (
-      <div className={isMobile ? "" : "container py-8"}>
+      <div className={`${isMobile ? "px-4" : "container"} py-8 max-w-4xl mx-auto`}>
         <GuideErrorState message="Den begärda guiden kunde inte hittas." />
       </div>
     );
   }
 
   return (
-    <div className={isMobile ? "" : "container py-8"}>
-      <Button
-        variant="outline"
-        asChild
-        className="mb-6"
-      >
-        <Link to="/">
-          <ChevronLeft className="mr-2 h-4 w-4" />
-          Tillbaka till Guider
-        </Link>
-      </Button>
-      <GuideContent guide={guide} />
-      
-      {otherGuides && otherGuides.length > 0 && (
-        <div className="mt-12">
-          <h2 className="text-2xl font-semibold mb-6">Andra Guider</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {otherGuides.map((otherGuide) => (
-              <GuideCard
-                key={otherGuide.id}
-                id={otherGuide.id}
-                title={otherGuide.title}
-                description={otherGuide.description || ""}
-              />
-            ))}
-          </div>
+    <div className="min-h-screen bg-white">
+      <div className={`${isMobile ? "px-4" : "container"} py-8 max-w-4xl mx-auto`}>
+        <Button
+          variant="ghost"
+          asChild
+          className="mb-8 hover:bg-gray-100 -ml-2"
+        >
+          <Link to="/">
+            <ChevronLeft className="mr-2 h-4 w-4" />
+            Back to Guides
+          </Link>
+        </Button>
+        
+        <div className="space-y-8">
+          <GuideContent guide={guide} />
+          
+          {otherGuides && otherGuides.length > 0 && (
+            <div className="mt-16 pt-8 border-t border-gray-100">
+              <h2 className="text-2xl font-medium text-gray-900 mb-8">Other Guides</h2>
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                {otherGuides.map((otherGuide) => (
+                  <GuideCard
+                    key={otherGuide.id}
+                    id={otherGuide.id}
+                    title={otherGuide.title}
+                    description={otherGuide.description || ""}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
         </div>
-      )}
+      </div>
     </div>
   );
 };

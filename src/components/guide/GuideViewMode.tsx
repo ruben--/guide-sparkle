@@ -19,27 +19,31 @@ export const GuideViewMode = ({
   onEdit,
   onDelete,
 }: GuideViewModeProps) => (
-  <div className="animate-fade-in">
-    <CardHeader className="flex flex-row items-center justify-between space-y-0">
-      <CardTitle className="text-2xl">{title}</CardTitle>
+  <div className="animate-fade-in bg-white rounded-lg shadow-sm border border-gray-100">
+    <CardHeader className="flex flex-row items-start justify-between space-y-0 px-8 pt-8">
+      <div className="space-y-2">
+        <CardTitle className="text-3xl font-medium tracking-tight text-gray-900">{title}</CardTitle>
+        {description && (
+          <p className="text-gray-500 leading-relaxed max-w-2xl">{description}</p>
+        )}
+      </div>
       {isLoggedIn && (
-        <div className="flex gap-2">
-          <Button variant="outline" size="icon" onClick={onEdit}>
+        <div className="flex gap-2 ml-4">
+          <Button variant="ghost" size="icon" onClick={onEdit} className="hover:bg-gray-100">
             <Pencil className="h-4 w-4" />
           </Button>
-          <Button variant="destructive" size="icon" onClick={onDelete}>
+          <Button variant="ghost" size="icon" onClick={onDelete} className="hover:bg-gray-100 text-red-500">
             <Trash className="h-4 w-4" />
           </Button>
         </div>
       )}
     </CardHeader>
-    <CardContent>
-      {description && (
-        <p className="text-muted-foreground mb-4">{description}</p>
-      )}
+    <CardContent className="px-8 pb-8">
       {content && (
         <div 
-          className="prose max-w-none [&_a]:text-sky-600 [&_a:hover]:text-sky-700 [&_br]:my-2 whitespace-pre-wrap"
+          className="prose prose-gray max-w-none [&_a]:text-gray-900 [&_a:hover]:text-gray-700 
+                     [&_br]:my-2 whitespace-pre-wrap prose-headings:font-medium prose-h1:text-3xl 
+                     prose-h2:text-2xl prose-h3:text-xl prose-img:rounded-lg prose-img:shadow-sm"
           dangerouslySetInnerHTML={{ __html: content }}
         />
       )}
