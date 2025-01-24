@@ -29,15 +29,15 @@ export const Navigation = () => {
     const { error } = await supabase.auth.signOut();
     if (error) {
       toast({
-        title: "Error",
-        description: "Failed to log out",
+        title: "Fel",
+        description: "Det gick inte att logga ut",
         variant: "destructive",
       });
       return;
     }
     toast({
-      title: "Success",
-      description: "Logged out successfully",
+      title: "Klart",
+      description: "Du har loggats ut",
     });
     navigate("/");
   };
@@ -53,11 +53,11 @@ export const Navigation = () => {
           <div className="flex items-center gap-6">
             <img 
               src="https://media.licdn.com/dms/image/v2/D4D0BAQFjhhGBkoBGkA/company-logo_200_200/company-logo_200_200/0/1731318042538/feverenergy_logo?e=2147483647&v=beta&t=wKLSwZDTsxJSA2Izt0BJQAND4V4cXRn8vKr2jOpezMY" 
-              alt="Fever Energy Logo" 
+              alt="Fever Energy Logotyp" 
               className="h-8 w-auto"
             />
             <Link to="/" className="text-lg font-semibold hover:text-primary">
-              Guides
+              Guider
             </Link>
             {isLoggedIn && (
               <Link to="/admin" className="text-lg hover:text-primary">
@@ -70,7 +70,7 @@ export const Navigation = () => {
             onClick={isLoggedIn ? handleLogout : handleLogin}
             className="rounded-none border-black"
           >
-            {isLoggedIn ? "Logout" : "Login"}
+            {isLoggedIn ? "Logga ut" : "Logga in"}
           </Button>
         </div>
       </div>
