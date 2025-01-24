@@ -1,6 +1,5 @@
 project_id = "stivwquniuwkzdmsrkzh"
 
-[api]
-enabled = true
-[api.guides-api]
-path = "guides-api"
+[[functions]]
+name = "guides-api"
+verify_jwt = false
