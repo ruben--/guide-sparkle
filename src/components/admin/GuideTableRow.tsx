@@ -17,7 +17,7 @@ export const GuideTableRow = ({ guide, onClick }: GuideTableRowProps) => (
     <TableCell>{guide.description}</TableCell>
     <TableCell className="max-w-xs">
       <div 
-        className="truncate prose prose-sm [&_img]:max-h-20 [&_img]:w-auto [&_img]:inline-block [&_img]:object-contain"
+        className="truncate prose prose-sm [&_img]:max-h-20 [&_img]:w-auto [&_img]:object-contain [&_img]:aspect-auto"
         dangerouslySetInnerHTML={{ __html: guide.content || '' }} 
       />
     </TableCell>
