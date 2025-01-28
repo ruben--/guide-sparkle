@@ -11,15 +11,15 @@ interface GuideCardProps {
 export const GuideCard = ({ title, description, id }: GuideCardProps) => {
   return (
     <Link to={`/guide/${id}`} className="block group">
-      <Card className="h-full border-2 border-black rounded-lg hover:bg-gray-50 transition-all duration-200">
+      <Card className="h-full border-2 border-mono-darker rounded-lg bg-mono-white hover:bg-mono-lighter transition-all duration-200">
         <CardHeader className="pb-2">
-          <CardTitle className="text-xl font-medium tracking-tight text-black group-hover:translate-x-1 transition-transform">
+          <CardTitle className="text-xl font-medium tracking-tight text-mono-darker group-hover:translate-x-1 transition-transform">
             {title}
-            <ArrowRight className="inline-block ml-2 h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity" />
+            <ArrowRight className="inline-block ml-2 h-5 w-5 opacity-0 group-hover:opacity-100 transition-opacity text-coral-DEFAULT" />
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <p className="text-gray-500 line-clamp-3 mb-4">{description}</p>
+          <p className="text-mono-dark line-clamp-3 mb-4">{description}</p>
         </CardContent>
       </Card>
     </Link>

@@ -23,6 +23,22 @@ export default {
         graphik: ['Graphik', 'sans-serif'],
       },
       colors: {
+        'coral': {
+          light: '#EF8F64',
+          DEFAULT: '#ED793C',
+        },
+        'rust': {
+          DEFAULT: '#B23127',
+          dark: '#6D1711',
+        },
+        'mono': {
+          white: '#F9FAF9',
+          lighter: '#DCDDDD',
+          light: '#C5C6C7',
+          medium: '#8C8E8F',
+          dark: '#535557',
+          darker: '#181D1F',
+        },
         border: "#000000",
         input: "#000000",
         ring: "#000000",
