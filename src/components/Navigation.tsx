@@ -56,11 +56,11 @@ export const Navigation = () => {
               alt="Fever Energy Logotyp" 
               className="h-8 w-auto"
             />
-            <Link to="/" className="text-lg font-semibold text-mono-darker hover:text-rust-DEFAULT transition-colors">
+            <Link to="/" className="text-lg font-semibold text-rust-DEFAULT hover:text-rust-dark transition-colors">
               Guider
             </Link>
             {isLoggedIn && (
-              <Link to="/admin" className="text-lg text-mono-darker hover:text-rust-DEFAULT transition-colors">
+              <Link to="/admin" className="text-lg text-rust-DEFAULT hover:text-rust-dark transition-colors">
                 Admin
               </Link>
             )}
@@ -68,7 +68,7 @@ export const Navigation = () => {
           <Button 
             variant="outline" 
             onClick={isLoggedIn ? handleLogout : handleLogin}
-            className="rounded-lg border-2 border-mono-darker bg-coral-DEFAULT text-mono-darker hover:bg-rust-DEFAULT hover:text-mono-white transition-colors"
+            className="rounded-lg border-2 border-rust-DEFAULT bg-coral-DEFAULT text-mono-darker hover:bg-coral-light hover:text-rust-DEFAULT transition-colors"
           >
             {isLoggedIn ? "Logga ut" : "Logga in"}
           </Button>
