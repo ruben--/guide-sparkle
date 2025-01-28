@@ -47,7 +47,7 @@ export const Navigation = () => {
   };
 
   return (
-    <nav className="border-b border-black mb-8 py-4 bg-white">
+    <nav className="border-b-2 border-mono-darker mb-8 py-4 bg-coral-light">
       <div className="container mx-auto">
         <div className="flex justify-between items-center">
           <div className="flex items-center gap-6">
@@ -56,11 +56,11 @@ export const Navigation = () => {
               alt="Fever Energy Logotyp" 
               className="h-8 w-auto"
             />
-            <Link to="/" className="text-lg font-semibold hover:text-primary">
+            <Link to="/" className="text-lg font-semibold text-mono-darker hover:text-rust-DEFAULT transition-colors">
               Guider
             </Link>
             {isLoggedIn && (
-              <Link to="/admin" className="text-lg hover:text-primary">
+              <Link to="/admin" className="text-lg text-mono-darker hover:text-rust-DEFAULT transition-colors">
                 Admin
               </Link>
             )}
@@ -68,7 +68,7 @@ export const Navigation = () => {
           <Button 
             variant="outline" 
             onClick={isLoggedIn ? handleLogout : handleLogin}
-            className="rounded-none border-black"
+            className="rounded-lg border-2 border-mono-darker bg-coral-DEFAULT text-mono-darker hover:bg-rust-DEFAULT hover:text-mono-white transition-colors"
           >
             {isLoggedIn ? "Logga ut" : "Logga in"}
           </Button>
