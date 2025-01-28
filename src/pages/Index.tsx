@@ -52,7 +52,7 @@ const Index = () => {
   return (
     <div className="container max-w-6xl py-12 space-y-12">
       <div className="space-y-4">
-        <h1 className="text-4xl font-medium tracking-tight text-black text-center">Installation Guides</h1>
+        <h1 className="text-4xl font-medium tracking-tight text-black text-center">Så installerar du Espen</h1>
         <p className="text-gray-500 text-center max-w-2xl mx-auto">
           Find detailed installation guides for all Fever Energy products and services.
         </p>
