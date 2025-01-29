@@ -27,7 +27,7 @@ export const ResizableImageNode = ({ node, updateAttributes }: ResizableImageNod
           src={node.attrs.src}
           style={{
             width: node.attrs.width || 'auto',
-            height: node.attrs.height || 'auto',
+            height: 'auto', // This ensures aspect ratio is maintained
             maxWidth: '100%',
             objectFit: 'contain',
           }}

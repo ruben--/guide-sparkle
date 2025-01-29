@@ -7,9 +7,7 @@ interface ResizeHandleProps {
 export const ResizeHandle = ({ onResize }: ResizeHandleProps) => {
   const isResizing = useRef(false);
   const startX = useRef(0);
-  const startY = useRef(0);
   const startWidth = useRef(0);
-  const startHeight = useRef(0);
   const imageRef = useRef<HTMLImageElement | null>(null);
 
   const handleMouseDown = useCallback((e: MouseEvent) => {
@@ -17,18 +15,17 @@ export const ResizeHandle = ({ onResize }: ResizeHandleProps) => {
     
     isResizing.current = true;
     startX.current = e.clientX;
-    startY.current = e.clientY;
     startWidth.current = imageRef.current.offsetWidth;
-    startHeight.current = imageRef.current.offsetHeight;
   }, []);
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if (!isResizing.current || !imageRef.current) return;
 
     const deltaX = e.clientX - startX.current;
-    const aspectRatio = startWidth.current / startHeight.current;
-    
     const newWidth = Math.max(100, startWidth.current + deltaX);
+    
+    // Calculate height based on natural aspect ratio
+    const aspectRatio = imageRef.current.naturalWidth / imageRef.current.naturalHeight;
     const newHeight = Math.round(newWidth / aspectRatio);
 
     onResize(`${newWidth}px`, `${newHeight}px`);
