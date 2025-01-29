@@ -32,6 +32,7 @@ const Index = () => {
   if (isLoading) {
     return (
       <div className="container py-8 space-y-8">
+        <h1 className="text-4xl font-bold text-custom-red-dark mb-8">Installation av Espen</h1>
         <SearchBar onSearch={setSearchQuery} />
         <GuideLoadingState />
       </div>
@@ -41,6 +42,7 @@ const Index = () => {
   if (error) {
     return (
       <div className="container py-8 space-y-8">
+        <h1 className="text-4xl font-bold text-custom-red-dark mb-8">Installation av Espen</h1>
         <SearchBar onSearch={setSearchQuery} />
         <GuideErrorState 
           message={
@@ -55,6 +57,7 @@ const Index = () => {
 
   return (
     <div className="container py-8 space-y-8">
+      <h1 className="text-4xl font-bold text-custom-red-dark mb-8">Installation av Espen</h1>
       <SearchBar onSearch={setSearchQuery} />
       
       {/* Espen Guide - Full Width */}
