@@ -43,7 +43,8 @@ export const GuideViewMode = ({
         <div 
           className="prose prose-gray max-w-none [&_a]:text-gray-900 [&_a:hover]:text-gray-700 
                      [&_br]:my-2 whitespace-pre-wrap prose-headings:font-medium prose-h1:text-3xl 
-                     prose-h2:text-2xl prose-h3:text-xl prose-img:rounded-lg prose-img:shadow-sm"
+                     prose-h2:text-2xl prose-h3:text-xl prose-img:rounded-lg prose-img:shadow-sm
+                     [&_img]:max-w-full [&_img]:h-auto [&_img]:object-contain"
           dangerouslySetInnerHTML={{ __html: content }}
         />
       )}
