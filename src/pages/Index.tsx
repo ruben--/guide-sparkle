@@ -2,52 +2,39 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { SearchBar } from "@/components/SearchBar";
 import { GuideCard } from "@/components/GuideCard";
-import { GuideLoadingState } from "@/components/GuideLoadingState";
-import { GuideErrorState } from "@/components/GuideErrorState";
-import { useGuidesList } from "@/hooks/useGuidesList";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
 import { useAuthState } from "@/hooks/useAuthState";
 
+// Static data to replace API calls
+const staticGuides = [
+  {
+    id: "1",
+    title: "Installation av Espen",
+    description: "En grundläggande guide för installation av Espen-systemet."
+  },
+  {
+    id: "2",
+    title: "Växelriktare Konfiguration",
+    description: "Steg-för-steg instruktioner för att konfigurera olika typer av växelriktare."
+  },
+  {
+    id: "3",
+    title: "Felsökning",
+    description: "Vanliga problem och lösningar vid installation av Espen."
+  }
+];
+
 const Index = () => {
   const navigate = useNavigate();
-  const { data: guides, isLoading, error } = useGuidesList();
   const { isLoggedIn } = useAuthState();
   const [searchQuery, setSearchQuery] = useState("");
 
-  const filteredGuides = guides?.filter(
+  const filteredGuides = staticGuides.filter(
     (guide) =>
       guide.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (guide.description?.toLowerCase() || "").includes(searchQuery.toLowerCase())
-  ) || [];
-
-  if (isLoading) {
-    return (
-      <div className="container max-w-6xl py-12 space-y-12">
-        <SearchBar onSearch={setSearchQuery} />
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {[1, 2, 3].map((i) => (
-            <GuideLoadingState key={i} />
-          ))}
-        </div>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="container max-w-6xl py-12 space-y-12">
-        <SearchBar onSearch={setSearchQuery} />
-        <GuideErrorState 
-          message={
-            error instanceof Error 
-              ? error.message 
-              : "Failed to load guides. Please try again later."
-          } 
-        />
-      </div>
-    );
-  }
+      guide.description.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   return (
     <div className="container max-w-6xl py-12 space-y-12">
@@ -60,7 +47,7 @@ const Index = () => {
       <SearchBar onSearch={setSearchQuery} />
       {filteredGuides.length === 0 ? (
         <div className="text-center py-12">
-          <p className="text-gray-500">No guides found matching your search.</p>
+          <p className="text-gray-500">Inga guider hittades som matchar din sökning.</p>
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -69,7 +56,7 @@ const Index = () => {
               key={guide.id}
               id={guide.id}
               title={guide.title}
-              description={guide.description || ""}
+              description={guide.description}
             />
           ))}
         </div>
