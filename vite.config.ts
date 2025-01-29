@@ -24,5 +24,8 @@ export default defineConfig(({ mode }) => ({
     assetsDir: 'assets',
     sourcemap: true,
     minify: mode === 'production',
+    rollupOptions: {
+      external: [], // Explicitly define external dependencies if needed
+    }
   }
 }));
