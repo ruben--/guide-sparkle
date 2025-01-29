@@ -31,7 +31,7 @@ const Index = () => {
 
   if (isLoading) {
     return (
-      <div className="container py-8 space-y-8">
+      <div className="container py-8 space-y-8 px-4 md:px-8">
         <h1 className="text-4xl font-bold text-custom-red-dark mb-8">Installation av Espen</h1>
         <SearchBar onSearch={setSearchQuery} />
         <GuideLoadingState />
@@ -41,7 +41,7 @@ const Index = () => {
 
   if (error) {
     return (
-      <div className="container py-8 space-y-8">
+      <div className="container py-8 space-y-8 px-4 md:px-8">
         <h1 className="text-4xl font-bold text-custom-red-dark mb-8">Installation av Espen</h1>
         <SearchBar onSearch={setSearchQuery} />
         <GuideErrorState 
@@ -56,7 +56,7 @@ const Index = () => {
   }
 
   return (
-    <div className="container py-8 space-y-8">
+    <div className="container py-8 space-y-8 px-4 md:px-8">
       <h1 className="text-4xl font-bold text-custom-red-dark mb-8">Installation av Espen</h1>
       <SearchBar onSearch={setSearchQuery} />
       
@@ -73,7 +73,7 @@ const Index = () => {
       )}
 
       {/* Other Guides - Grid Layout */}
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
         {otherGuides.map((guide) => (
           <GuideCard 
             key={guide.id}
