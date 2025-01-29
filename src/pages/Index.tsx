@@ -21,6 +21,14 @@ const Index = () => {
       (guide.description?.toLowerCase() || "").includes(searchQuery.toLowerCase())
   ) || [];
 
+  // Separate Espen guide from other guides
+  const espenGuide = filteredGuides.find(guide => 
+    guide.title.toLowerCase().includes('espen')
+  );
+  const otherGuides = filteredGuides.filter(guide => 
+    !guide.title.toLowerCase().includes('espen')
+  );
+
   if (isLoading) {
     return (
       <div className="container py-8 space-y-8">
@@ -48,8 +56,22 @@ const Index = () => {
   return (
     <div className="container py-8 space-y-8">
       <SearchBar onSearch={setSearchQuery} />
+      
+      {/* Espen Guide - Full Width */}
+      {espenGuide && (
+        <div className="w-full mb-8">
+          <GuideCard 
+            key={espenGuide.id}
+            id={espenGuide.id}
+            title={espenGuide.title}
+            description={espenGuide.description || ""}
+          />
+        </div>
+      )}
+
+      {/* Other Guides - Grid Layout */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {filteredGuides.map((guide) => (
+        {otherGuides.map((guide) => (
           <GuideCard 
             key={guide.id}
             id={guide.id}
@@ -58,6 +80,7 @@ const Index = () => {
           />
         ))}
       </div>
+
       {isLoggedIn && (
         <Button
           onClick={() => navigate("/admin")}
