@@ -1,6 +1,4 @@
 import { useParams } from "react-router-dom";
-import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
 import { GuideContent } from "@/components/GuideContent";
 import { GuideLoadingState } from "@/components/GuideLoadingState";
 import { GuideErrorState } from "@/components/GuideErrorState";
@@ -9,53 +7,56 @@ import { Link } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { GuideCard } from "@/components/GuideCard";
+import { useState, useEffect } from "react";
+import { supabase } from "@/integrations/supabase/client";
+
+// Static data to replace API calls
+const staticGuides = [
+  {
+    id: "1",
+    title: "Installation av Espen",
+    description: "En grundläggande guide för installation av Espen-systemet.",
+    content: "Detaljerade instruktioner för Espen installation...",
+    created_at: new Date().toISOString()
+  },
+  {
+    id: "2",
+    title: "Växelriktare Konfiguration",
+    description: "Steg-för-steg instruktioner för att konfigurera olika typer av växelriktare.",
+    content: "Guide för växelriktare konfiguration...",
+    created_at: new Date().toISOString()
+  },
+  {
+    id: "3",
+    title: "Felsökning",
+    description: "Vanliga problem och lösningar vid installation av Espen.",
+    content: "Felsökningsguide...",
+    created_at: new Date().toISOString()
+  }
+];
 
 export const Guide = () => {
   const { id } = useParams();
   const isMobile = useIsMobile();
+  const [isLoading, setIsLoading] = useState(true);
+  const [error, setError] = useState<Error | null>(null);
+  const [guide, setGuide] = useState<any>(null);
+  const [otherGuides, setOtherGuides] = useState<any[]>([]);
 
-  const { data: guide, isLoading, error } = useQuery({
-    queryKey: ["guide", id],
-    queryFn: async () => {
-      const { data: guideData, error: supabaseError } = await supabase
-        .from("guides")
-        .select("*")
-        .eq("id", id)
-        .single();
-      
-      if (supabaseError) {
-        console.error('Error fetching guide:', supabaseError);
-        throw supabaseError;
+  useEffect(() => {
+    // Simulate loading
+    setIsLoading(true);
+    setTimeout(() => {
+      const foundGuide = staticGuides.find(g => g.id === id);
+      if (foundGuide) {
+        setGuide(foundGuide);
+        setOtherGuides(staticGuides.filter(g => g.id !== id));
+      } else {
+        setError(new Error("Guide not found"));
       }
-
-      if (!guideData) {
-        throw new Error("Guide not found");
-      }
-
-      return guideData;
-    },
-    enabled: Boolean(id)
-  });
-
-  const { data: otherGuides } = useQuery({
-    queryKey: ["other-guides", id],
-    queryFn: async () => {
-      const { data, error: guidesError } = await supabase
-        .from("guides")
-        .select("*")
-        .neq("id", id)
-        .order('created_at', { ascending: false })
-        .limit(3);
-      
-      if (guidesError) {
-        console.error('Error fetching other guides:', guidesError);
-        throw guidesError;
-      }
-      
-      return data || [];
-    },
-    enabled: Boolean(id)
-  });
+      setIsLoading(false);
+    }, 500);
+  }, [id]);
 
   if (isLoading) {
     return (
@@ -107,7 +108,7 @@ export const Guide = () => {
                     key={otherGuide.id}
                     id={otherGuide.id}
                     title={otherGuide.title}
-                    description={otherGuide.description || ""}
+                    description={otherGuide.description}
                   />
                 ))}
               </div>
