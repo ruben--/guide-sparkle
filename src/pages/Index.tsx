@@ -31,8 +31,8 @@ const Index = () => {
 
   if (isLoading) {
     return (
-      <div className="container py-8 space-y-8 px-4 md:px-8">
-        <h1 className="text-4xl font-bold text-custom-red-dark mb-8">Installation av Espen</h1>
+      <div className="container max-w-7xl py-12 space-y-12 px-4 md:px-8">
+        <h1 className="text-4xl font-bold text-custom-gray-darkest text-center mb-12">Installation av Espen</h1>
         <SearchBar onSearch={setSearchQuery} />
         <GuideLoadingState />
       </div>
@@ -41,8 +41,8 @@ const Index = () => {
 
   if (error) {
     return (
-      <div className="container py-8 space-y-8 px-4 md:px-8">
-        <h1 className="text-4xl font-bold text-custom-red-dark mb-8">Installation av Espen</h1>
+      <div className="container max-w-7xl py-12 space-y-12 px-4 md:px-8">
+        <h1 className="text-4xl font-bold text-custom-gray-darkest text-center mb-12">Installation av Espen</h1>
         <SearchBar onSearch={setSearchQuery} />
         <GuideErrorState 
           message={
@@ -56,8 +56,8 @@ const Index = () => {
   }
 
   return (
-    <div className="container py-8 space-y-8 px-4 md:px-8">
-      <h1 className="text-4xl font-bold text-custom-red-dark mb-8">Installation av Espen</h1>
+    <div className="container max-w-7xl py-12 space-y-12 px-4 md:px-8">
+      <h1 className="text-4xl font-bold text-custom-gray-darkest text-center mb-12">Installation av Espen</h1>
       <SearchBar onSearch={setSearchQuery} />
       
       {/* Espen Guide - Full Width */}
@@ -73,7 +73,7 @@ const Index = () => {
       )}
 
       {/* Other Guides - Grid Layout */}
-      <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
+      <div className="w-full grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
         {otherGuides.map((guide) => (
           <GuideCard 
             key={guide.id}
@@ -87,7 +87,7 @@ const Index = () => {
       {isLoggedIn && (
         <Button
           onClick={() => navigate("/admin")}
-          className="fixed bottom-8 right-8 rounded-full w-12 h-12 p-0"
+          className="fixed bottom-8 right-8 rounded-full w-12 h-12 p-0 bg-custom-red hover:bg-custom-red-dark shadow-lg"
           size="icon"
         >
           <PlusCircle className="h-6 w-6" />
