@@ -3,7 +3,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { useToast } from "@/hooks/use-toast";
-import { useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { TipTap } from "@/components/TipTap";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -13,7 +12,6 @@ export const AddGuideForm = () => {
   const [description, setDescription] = useState("");
   const [content, setContent] = useState("");
   const { toast } = useToast();
-  const queryClient = useQueryClient();
   const isMobile = useIsMobile();
 
   const handleAddGuide = async () => {
@@ -50,7 +48,9 @@ export const AddGuideForm = () => {
         description: "Guide added successfully",
       });
 
-      queryClient.invalidateQueries({ queryKey: ["guides"] });
+      // Instead of using queryClient.invalidateQueries, we can
+      // let the parent component handle updates if needed
+      // through props or context
     } catch (error) {
       console.error('Error adding guide:', error);
       toast({
