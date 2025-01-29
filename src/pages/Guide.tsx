@@ -13,6 +13,9 @@ import { Database } from "@/integrations/supabase/types";
 
 type Guide = Database['public']['Tables']['guides']['Row'];
 
+// Sample UUID for initial guide - replace with actual UUID from your database
+const INITIAL_GUIDE_UUID = "123e4567-e89b-12d3-a456-426614174000";
+
 export const Guide = () => {
   const { id } = useParams();
   const isMobile = useIsMobile();
@@ -26,14 +29,22 @@ export const Guide = () => {
       try {
         setIsLoading(true);
         
+        // Validate UUID format
+        const isValidUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id || '');
+        
+        if (!isValidUUID) {
+          throw new Error("Invalid guide ID format");
+        }
+
         // Fetch the current guide
         const { data: currentGuide, error: guideError } = await supabase
           .from('guides')
           .select('*')
           .eq('id', id)
-          .single();
+          .maybeSingle();
 
         if (guideError) throw guideError;
+        if (!currentGuide) throw new Error("Guide not found");
 
         // Fetch other guides (excluding current one)
         const { data: others, error: othersError } = await supabase
