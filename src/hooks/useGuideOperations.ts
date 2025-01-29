@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useQueryClient } from "@tanstack/react-query";
 import { Database } from "@/integrations/supabase/types";
 
 type Guide = Database['public']['Tables']['guides']['Row'];
@@ -14,6 +15,7 @@ export const useGuideOperations = (guide: Guide) => {
   
   const { toast } = useToast();
   const navigate = useNavigate();
+  const queryClient = useQueryClient();
 
   const handleEditClick = () => {
     setTitle(guide.title);
@@ -37,8 +39,8 @@ export const useGuideOperations = (guide: Guide) => {
       });
       
       setIsEditing(false);
-      // Refresh the page to show updated content
-      window.location.reload();
+      queryClient.invalidateQueries({ queryKey: ["guide", guide.id] });
+      queryClient.invalidateQueries({ queryKey: ["guides"] });
     } catch (error) {
       console.error('Error updating guide:', error);
       toast({

@@ -27,11 +27,11 @@ export const ResizableImageNode = ({ node, updateAttributes }: ResizableImageNod
           src={node.attrs.src}
           style={{
             width: node.attrs.width || 'auto',
-            height: 'auto', // Always auto to maintain aspect ratio
+            height: node.attrs.height || 'auto',
             maxWidth: '100%',
             objectFit: 'contain',
           }}
-          className="cursor-pointer rounded-md aspect-auto"
+          className="cursor-pointer rounded-md"
         />
         <ResizeHandle onResize={handleResize} />
       </div>

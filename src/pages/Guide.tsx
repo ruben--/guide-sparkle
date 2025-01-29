@@ -1,4 +1,6 @@
 import { useParams } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { GuideContent } from "@/components/GuideContent";
 import { GuideLoadingState } from "@/components/GuideLoadingState";
 import { GuideErrorState } from "@/components/GuideErrorState";
@@ -7,70 +9,53 @@ import { Link } from "react-router-dom";
 import { ChevronLeft } from "lucide-react";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { GuideCard } from "@/components/GuideCard";
-import { useState, useEffect } from "react";
-import { supabase } from "@/integrations/supabase/client";
-import { Database } from "@/integrations/supabase/types";
-
-type Guide = Database['public']['Tables']['guides']['Row'];
-
-// Sample UUID for initial guide - replace with actual UUID from your database
-const INITIAL_GUIDE_UUID = "123e4567-e89b-12d3-a456-426614174000";
 
 export const Guide = () => {
   const { id } = useParams();
   const isMobile = useIsMobile();
-  const [isLoading, setIsLoading] = useState(true);
-  const [error, setError] = useState<Error | null>(null);
-  const [guide, setGuide] = useState<Guide | null>(null);
-  const [otherGuides, setOtherGuides] = useState<Guide[]>([]);
 
-  useEffect(() => {
-    const fetchGuides = async () => {
-      try {
-        setIsLoading(true);
-        
-        // Validate UUID format
-        const isValidUUID = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(id || '');
-        
-        if (!isValidUUID) {
-          throw new Error("Invalid guide ID format");
-        }
-
-        // Fetch the current guide
-        const { data: currentGuide, error: guideError } = await supabase
-          .from('guides')
-          .select('*')
-          .eq('id', id)
-          .maybeSingle();
-
-        if (guideError) throw guideError;
-        if (!currentGuide) throw new Error("Guide not found");
-
-        // Fetch other guides (excluding current one)
-        const { data: others, error: othersError } = await supabase
-          .from('guides')
-          .select('*')
-          .neq('id', id)
-          .order('created_at', { ascending: false })
-          .limit(3);
-
-        if (othersError) throw othersError;
-
-        setGuide(currentGuide);
-        setOtherGuides(others || []);
-        setError(null);
-      } catch (err) {
-        console.error('Error fetching guides:', err);
-        setError(err instanceof Error ? err : new Error('Failed to fetch guides'));
-      } finally {
-        setIsLoading(false);
+  const { data: guide, isLoading, error } = useQuery({
+    queryKey: ["guide", id],
+    queryFn: async () => {
+      const { data: guideData, error: supabaseError } = await supabase
+        .from("guides")
+        .select("*")
+        .eq("id", id)
+        .single();
+      
+      if (supabaseError) {
+        console.error('Error fetching guide:', supabaseError);
+        throw supabaseError;
       }
-    };
 
-    if (id) {
-      fetchGuides();
-    }
-  }, [id]);
+      if (!guideData) {
+        throw new Error("Guide not found");
+      }
+
+      return guideData;
+    },
+    enabled: Boolean(id)
+  });
+
+  const { data: otherGuides } = useQuery({
+    queryKey: ["other-guides", id],
+    queryFn: async () => {
+      const { data, error: guidesError } = await supabase
+        .from("guides")
+        .select("*")
+        .neq("id", id)
+        .order('created_at', { ascending: false })
+        .limit(3);
+      
+      if (guidesError) {
+        console.error('Error fetching other guides:', guidesError);
+        throw guidesError;
+      }
+      
+      return data || [];
+    },
+    enabled: Boolean(id)
+  });
 
   if (isLoading) {
     return (
@@ -83,7 +68,7 @@ export const Guide = () => {
   if (error) {
     return (
       <div className={`${isMobile ? "px-4" : "container"} py-8 max-w-4xl mx-auto`}>
-        <GuideErrorState message={error.message} />
+        <GuideErrorState />
       </div>
     );
   }
@@ -122,7 +107,7 @@ export const Guide = () => {
                     key={otherGuide.id}
                     id={otherGuide.id}
                     title={otherGuide.title}
-                    description={otherGuide.description || ''}
+                    description={otherGuide.description || ""}
                   />
                 ))}
               </div>

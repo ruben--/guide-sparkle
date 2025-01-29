@@ -19,20 +19,20 @@ export const GuideViewMode = ({
   onEdit,
   onDelete,
 }: GuideViewModeProps) => (
-  <div className="animate-fade-in bg-mono-white rounded-lg shadow-lg border-2 border-mono-darker">
+  <div className="animate-fade-in bg-white rounded-lg shadow-sm border border-gray-100">
     <CardHeader className="flex flex-row items-start justify-between space-y-0 px-8 pt-8">
       <div className="space-y-2">
-        <CardTitle className="text-3xl font-medium tracking-tight text-mono-darker">{title}</CardTitle>
+        <CardTitle className="text-3xl font-medium tracking-tight text-gray-900">{title}</CardTitle>
         {description && (
-          <p className="text-mono-dark leading-relaxed max-w-2xl">{description}</p>
+          <p className="text-gray-500 leading-relaxed max-w-2xl">{description}</p>
         )}
       </div>
       {isLoggedIn && (
         <div className="flex gap-2 ml-4">
-          <Button variant="ghost" size="icon" onClick={onEdit} className="hover:bg-mono-lighter rounded-lg">
-            <Pencil className="h-4 w-4 text-coral-DEFAULT" />
+          <Button variant="ghost" size="icon" onClick={onEdit} className="hover:bg-gray-100">
+            <Pencil className="h-4 w-4" />
           </Button>
-          <Button variant="ghost" size="icon" onClick={onDelete} className="hover:bg-mono-lighter text-rust-DEFAULT hover:text-rust-dark rounded-lg">
+          <Button variant="ghost" size="icon" onClick={onDelete} className="hover:bg-gray-100 text-red-500">
             <Trash className="h-4 w-4" />
           </Button>
         </div>
@@ -41,10 +41,9 @@ export const GuideViewMode = ({
     <CardContent className="px-8 pb-8">
       {content && (
         <div 
-          className="prose prose-gray max-w-none [&_a]:text-coral-DEFAULT [&_a:hover]:text-coral-light 
+          className="prose prose-gray max-w-none [&_a]:text-gray-900 [&_a:hover]:text-gray-700 
                      [&_br]:my-2 whitespace-pre-wrap prose-headings:font-medium prose-h1:text-3xl 
-                     prose-h2:text-2xl prose-h3:text-xl prose-img:rounded-lg prose-img:shadow-lg
-                     [&_img]:max-w-full [&_img]:h-auto [&_img]:object-contain [&_img]:aspect-auto"
+                     prose-h2:text-2xl prose-h3:text-xl prose-img:rounded-lg prose-img:shadow-sm"
           dangerouslySetInnerHTML={{ __html: content }}
         />
       )}
