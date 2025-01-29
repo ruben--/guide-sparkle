@@ -9,53 +9,56 @@ import { useIsMobile } from "@/hooks/use-mobile";
 import { GuideCard } from "@/components/GuideCard";
 import { useState, useEffect } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { Database } from "@/integrations/supabase/types";
 
-// Static data to replace API calls
-const staticGuides = [
-  {
-    id: "1",
-    title: "Installation av Espen",
-    description: "En grundläggande guide för installation av Espen-systemet.",
-    content: "Detaljerade instruktioner för Espen installation...",
-    created_at: new Date().toISOString()
-  },
-  {
-    id: "2",
-    title: "Växelriktare Konfiguration",
-    description: "Steg-för-steg instruktioner för att konfigurera olika typer av växelriktare.",
-    content: "Guide för växelriktare konfiguration...",
-    created_at: new Date().toISOString()
-  },
-  {
-    id: "3",
-    title: "Felsökning",
-    description: "Vanliga problem och lösningar vid installation av Espen.",
-    content: "Felsökningsguide...",
-    created_at: new Date().toISOString()
-  }
-];
+type Guide = Database['public']['Tables']['guides']['Row'];
 
 export const Guide = () => {
   const { id } = useParams();
   const isMobile = useIsMobile();
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<Error | null>(null);
-  const [guide, setGuide] = useState<any>(null);
-  const [otherGuides, setOtherGuides] = useState<any[]>([]);
+  const [guide, setGuide] = useState<Guide | null>(null);
+  const [otherGuides, setOtherGuides] = useState<Guide[]>([]);
 
   useEffect(() => {
-    // Simulate loading
-    setIsLoading(true);
-    setTimeout(() => {
-      const foundGuide = staticGuides.find(g => g.id === id);
-      if (foundGuide) {
-        setGuide(foundGuide);
-        setOtherGuides(staticGuides.filter(g => g.id !== id));
-      } else {
-        setError(new Error("Guide not found"));
+    const fetchGuides = async () => {
+      try {
+        setIsLoading(true);
+        
+        // Fetch the current guide
+        const { data: currentGuide, error: guideError } = await supabase
+          .from('guides')
+          .select('*')
+          .eq('id', id)
+          .single();
+
+        if (guideError) throw guideError;
+
+        // Fetch other guides (excluding current one)
+        const { data: others, error: othersError } = await supabase
+          .from('guides')
+          .select('*')
+          .neq('id', id)
+          .order('created_at', { ascending: false })
+          .limit(3);
+
+        if (othersError) throw othersError;
+
+        setGuide(currentGuide);
+        setOtherGuides(others || []);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching guides:', err);
+        setError(err instanceof Error ? err : new Error('Failed to fetch guides'));
+      } finally {
+        setIsLoading(false);
       }
-      setIsLoading(false);
-    }, 500);
+    };
+
+    if (id) {
+      fetchGuides();
+    }
   }, [id]);
 
   if (isLoading) {
@@ -69,7 +72,7 @@ export const Guide = () => {
   if (error) {
     return (
       <div className={`${isMobile ? "px-4" : "container"} py-8 max-w-4xl mx-auto`}>
-        <GuideErrorState />
+        <GuideErrorState message={error.message} />
       </div>
     );
   }
@@ -108,7 +111,7 @@ export const Guide = () => {
                     key={otherGuide.id}
                     id={otherGuide.id}
                     title={otherGuide.title}
-                    description={otherGuide.description}
+                    description={otherGuide.description || ''}
                   />
                 ))}
               </div>
