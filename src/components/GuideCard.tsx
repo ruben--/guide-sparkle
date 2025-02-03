@@ -9,14 +9,20 @@ interface GuideCardProps {
 
 export const GuideCard = ({ title, description, id }: GuideCardProps) => {
   return (
-    <Link to={`/guide/${id}`} className="w-full">
-      <Card className="w-full h-full hover:shadow-lg transition-all duration-200 hover:scale-[1.02] border-[1px] border-custom-gray-lighter bg-white rounded-xl group">
-        <CardHeader className="pb-2">
-          <CardTitle className="text-xl text-custom-gray-darkest group-hover:text-custom-red transition-colors duration-200 font-medium px-6 py-2">{title}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <p className="text-custom-gray-dark line-clamp-3 px-6 py-4">{description}</p>
-        </CardContent>
+    <Link to={`/guide/${id}`} className="block w-full h-full">
+      <Card className="w-full h-full bg-white hover:bg-gray-50 transition-all duration-200 border border-gray-200 rounded-lg overflow-hidden group">
+        <div className="p-8 h-full flex flex-col">
+          <CardHeader className="p-0 mb-4">
+            <CardTitle className="text-xl font-medium text-gray-900 group-hover:text-custom-red transition-colors">
+              {title}
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="p-0 flex-grow">
+            <p className="text-gray-600 text-base leading-relaxed">
+              {description}
+            </p>
+          </CardContent>
+        </div>
       </Card>
     </Link>
   );
