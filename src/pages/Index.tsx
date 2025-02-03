@@ -4,9 +4,9 @@ import { SearchBar } from "@/components/SearchBar";
 import { GuideCard } from "@/components/GuideCard";
 import { GuideLoadingState } from "@/components/GuideLoadingState";
 import { GuideErrorState } from "@/components/GuideErrorState";
-import { useGuidesList } from "@/hooks/useGuidesList";
 import { Button } from "@/components/ui/button";
 import { PlusCircle } from "lucide-react";
+import { useGuidesList } from "@/hooks/useGuidesList";
 import { useAuthState } from "@/hooks/useAuthState";
 
 const Index = () => {
@@ -18,7 +18,7 @@ const Index = () => {
   const filteredGuides = guides?.filter(
     (guide) =>
       guide.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (guide.description?.toLowerCase() || "").includes(searchQuery.toLowerCase())
+      (guide.description || "").toLowerCase().includes(searchQuery.toLowerCase())
   ) || [];
 
   // Separate Espen guide from other guides
