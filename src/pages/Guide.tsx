@@ -43,9 +43,7 @@ export const Guide = () => {
       const { data, error: guidesError } = await supabase
         .from("guides")
         .select("*")
-        .neq("id", id)
-        .order('created_at', { ascending: false })
-        .limit(3);
+        .order('created_at', { ascending: false });
       
       if (guidesError) {
         console.error('Error fetching other guides:', guidesError);
@@ -100,7 +98,7 @@ export const Guide = () => {
           
           {otherGuides && otherGuides.length > 0 && (
             <div className="mt-16 pt-8 border-t border-gray-100">
-              <h2 className="text-2xl font-medium text-gray-900 mb-8">Other Guides</h2>
+              <h2 className="text-2xl font-medium text-gray-900 mb-8">Overview</h2>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                 {otherGuides.map((otherGuide) => (
                   <GuideCard
